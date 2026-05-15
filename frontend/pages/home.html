@@ -1,69 +1,137 @@
 <!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>DevLens - Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#131318","surface-dim":"#131318","on-tertiary":"#4f2500","on-secondary-fixed-variant":"#004395","tertiary-fixed-dim":"#ffb784","tertiary-container":"#a15100",warning:"#f59e0b","text-secondary":"#8b93a1","inverse-on-surface":"#303036","inverse-primary":"#732ee4","on-primary-container":"#ede0ff","on-surface":"#e4e1e9","surface-container-low":"#1b1b20","tertiary-fixed":"#ffdcc6","secondary-fixed":"#d8e2ff",primary:"#d2bbff",border:"#1e1e2e","primary-fixed-dim":"#d2bbff","error-container":"#93000a",success:"#10b981","primary-fixed":"#eaddff","secondary-fixed-dim":"#adc6ff","surface-container-lowest":"#0e0e13","surface-container-high":"#2a292f","on-primary-fixed":"#25005a",danger:"#ef4444","surface-tint":"#d2bbff",secondary:"#adc6ff",tertiary:"#ffb784",surface:"#13131a",outline:"#958da1","text-primary":"#ffffff","surface-container":"#1f1f25","on-secondary-fixed":"#001a42","surface-container-highest":"#35343a","on-background":"#e4e1e9","on-secondary":"#002e6a","on-error-container":"#ffdad6","on-tertiary-fixed-variant":"#713700","secondary-container":"#0566d9","on-surface-variant":"#ccc3d8","inverse-surface":"#e4e1e9","primary-container":"#7c3aed","on-tertiary-container":"#ffe0cd","on-tertiary-fixed":"#301400",error:"#ffb4ab","on-secondary-container":"#e6ecff","outline-variant":"#4a4455","surface-bright":"#39383e","on-primary":"#3f008e","surface-variant":"#35343a","on-error":"#690005","on-primary-fixed-variant":"#5a00c6"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"container-max":"1440px","2xl":"48px",base:"4px",sm:"8px",md:"16px",gutter:"24px",xl:"32px",lg:"24px",xs:"4px"},fontFamily:{"headline-md":["Inter"],"label-sm":["JetBrains Mono"],"body-lg":["Inter"],"headline-xl":["Inter"],"body-sm":["Inter"],"headline-lg":["Inter"],"body-md":["Inter"],"label-md":["JetBrains Mono"]},fontSize:{"headline-md":["24px",{lineHeight:"32px",fontWeight:"600"}],"label-sm":["12px",{lineHeight:"16px",fontWeight:"500"}],"body-lg":["18px",{lineHeight:"28px",fontWeight:"400"}],"headline-xl":["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"700"}],"body-sm":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.01em",fontWeight:"600"}],"body-md":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-md":["14px",{lineHeight:"20px",fontWeight:"500"}]}}}}
-</script>
-<style>
-body{background-color:#0a0a0f;}
-.ambient-glow:hover{box-shadow:0 0 20px 0 rgba(124,58,237,0.15);}
-.btn-primary{background:linear-gradient(135deg,#7c3aed 0%,#3b82f6 100%);transition:all 0.3s ease;}
-.btn-primary:hover{box-shadow:0 0 20px rgba(124,58,237,0.4);}
-</style>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>DevLens - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <style>
+    body { background-color: #0a0a0f; }
+    .ambient-glow:hover { box-shadow: 0 0 20px 0 rgba(124,58,237,0.15); }
+    .btn-primary { background: linear-gradient(135deg,#7c3aed 0%,#3b82f6 100%); transition: all 0.3s ease; }
+    .btn-primary:hover { box-shadow: 0 0 20px rgba(124,58,237,0.4); }
+    .role-btn { transition: all 0.2s ease; }
+    #agent-logs { height: 180px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #7c3aed #13131a; }
+  .nav-active {
+    color: #d2bbff;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 4px;
+  }
+  .nav-active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #d2bbff;
+    border-radius: 2px;
+  }
+  </style>
 </head>
-<body class="text-on-surface font-body-md text-body-md min-h-screen flex flex-col">
+<body class="text-white font-sans min-h-screen">
 
-<!-- Nav — matching landing page style -->
-<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
-  <nav class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto">
+<!-- Nav — exactly matching dashboard -->
+<header class="fixed top-0 w-full z-50 bg-[#131318]/90 backdrop-blur-xl">
+  <nav class="flex justify-between items-center px-6 h-[60px] max-w-[1440px] mx-auto">
     <!-- Left: Logo -->
-    <div class="flex items-center gap-sm">
-      <span class="material-symbols-outlined text-primary text-[32px]" style="font-variation-settings:'FILL' 1">visibility</span>
-      <span class="font-headline-md text-headline-md font-bold text-on-surface">DevLens</span>
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[#d2bbff] text-[32px]" style="font-variation-settings:'FILL' 1">visibility</span>
+      <span class="text-[24px] font-bold text-white tracking-tight">DevLens</span>
     </div>
     <!-- Center: Nav Links -->
-    <div class="hidden md:flex items-center gap-xl">
-      <a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Repositories</a>
-      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Analytics</a>
-      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Settings</a>
-      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Pricing</a>
+    <div class="hidden md:flex items-center gap-9">
+      <a class="nav-active text-[18px]" href="#">Repositories</a>
+      <a class="text-[#ccc3d8] hover:text-white transition-colors text-[18px]" href="#">Analytics</a>
+      <a class="text-[#ccc3d8] hover:text-white transition-colors text-[18px]" href="#">Settings</a>
+      <a class="text-[#ccc3d8] hover:text-white transition-colors text-[18px]" href="#">Pricing</a>
     </div>
-    <!-- Right: Sign In + Get Started (matching landing page) -->
-    <div class="flex items-center gap-md">
-        <button 
-        id="logoutBtn"
-        class="bg-gradient-to-r from-red-500 to-red-700 text-white font-label-md text-label-md px-lg py-sm rounded-lg hover:shadow-[0_0_20px_rgba(239,68,68,0.45)] hover:scale-[1.02] active:scale-95 transition-all duration-300">
+    <!-- Right: Log Out -->
+    <div class="flex items-center">
+      <button
+        onclick="logout()"
+        class="bg-gradient-to-r from-red-500 to-red-700 text-white text-[16px] font-medium px-6 py-2 rounded-lg hover:shadow-[0_0_20px_rgba(239,68,68,0.45)] hover:scale-[1.02] active:scale-95 transition-all duration-300">
         Log Out
-        </button>
+      </button>
     </div>
   </nav>
 </header>
+<div class="h-[60px]"></div>
+  <!-- MAIN SECTION -->
+  <main id="main-section" class="pt-24 px-6 max-w-4xl mx-auto w-full">
 
-<!-- Main Content -->
-<main class="flex-grow pt-2xl px-gutter max-w-container-max mx-auto w-full flex flex-col gap-2xl pb-2xl">
-  <!-- Hero Section -->
-  <section class="flex flex-col items-center justify-center pt-2xl mt-xl text-center max-w-3xl mx-auto w-full">
-    <h1 class="font-headline-xl text-headline-xl text-text-primary mb-md">Understand Any Codebase in 60 Seconds</h1>
-    <p class="font-body-lg text-body-lg text-text-secondary mb-xl">Deep architectural analysis, vulnerability scanning, and code quality metrics powered by next-gen AI.</p>
-    <div class="w-full relative flex items-center bg-surface border border-border rounded-full p-xs focus-within:border-primary-container focus-within:ring-2 focus-within:ring-primary-container/20 transition-all mb-lg shadow-lg">
-      <span class="material-symbols-outlined text-text-secondary ml-md mr-sm">link</span>
-      <input class="bg-transparent border-none w-full text-body-md font-body-md text-text-primary focus:outline-none focus:ring-0 placeholder:text-text-secondary" placeholder="https://github.com/owner/repo" type="text"/>
-      <button class="bg-gradient-to-r from-primary-container to-secondary-container text-white px-lg py-sm rounded-full font-label-md text-label-md flex items-center gap-xs hover:shadow-[0_0_15px_rgba(124,58,237,0.4)] transition-shadow">
-        Analyze
-        <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
-      </button>
+    <!-- Hero -->
+    <section class="flex flex-col items-center text-center pt-12 mb-16">
+      <h1 class="text-5xl font-bold text-white mb-4">
+        Understand Any Codebase<br/>
+        <span class="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">in 60 Seconds</span>
+      </h1>
+      <p class="text-gray-400 text-lg mb-8 max-w-2xl">
+        Paste a GitHub repository URL. DevLens maps every file, dependency, and risk — then builds your personal onboarding path.
+      </p>
+
+      <!-- URL Input -->
+      <div class="w-full flex items-center bg-[#13131a] border border-[#1e1e2e] rounded-full p-1 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-500/20 transition-all mb-4 shadow-lg">
+        <span class="material-symbols-outlined text-gray-400 ml-4 mr-2">link</span>
+        <input
+          id="repoUrl"
+          class="bg-transparent border-none w-full text-white text-sm focus:outline-none placeholder:text-gray-500 py-2"
+          placeholder="https://github.com/owner/repo"
+          type="text"
+        />
+        <button
+          onclick="analyzeRepo()"
+          class="btn-primary text-white px-6 py-2 rounded-full text-sm font-medium flex items-center gap-1 shrink-0">
+          Analyze
+          <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+        </button>
+      </div>
+
+      <!-- Role Selector -->
+      <div class="flex gap-2 flex-wrap justify-center">
+        
+      </div>
+    </section>
+
+    <!-- Past Analyses -->
+    <section>
+      <h2 class="text-xl font-bold text-white mb-4">Recent Analyses</h2>
+      <div id="past-analyses" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <p class="text-gray-500 text-sm">Loading...</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- LOADING SECTION (hidden by default) -->
+  <div id="loading-section" class="hidden fixed inset-0 bg-[#0a0a0f] flex flex-col items-center justify-center px-6 z-40">
+    <!-- Spinner -->
+    <div class="w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mb-6"></div>
+    <h2 class="text-2xl font-bold text-white mb-2">Analyzing Repository...</h2>
+    <p class="text-gray-400 text-sm mb-6">This takes 30–60 seconds for most repositories.</p>
+
+    <!-- Agent Log Terminal -->
+    <div class="w-full max-w-xl bg-[#0d0d14] border border-[#1e1e2e] rounded-xl p-4 mb-4 font-mono">
+      <div id="agent-logs" class="text-green-400 text-xs leading-relaxed"></div>
     </div>
-  </section>
 
-  <!-- Recent Analyses -->
-  <div id="recent-analysis"></div>
-</main>
-<script src="../js/home.js"></script>
+    <!-- Progress Bar -->
+    <div class="w-full max-w-xl bg-[#1e1e2e] rounded-full h-2">
+      <div id="progress-bar" class="h-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 transition-all duration-500" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/home.js"></script>
+  <script>
+    // Show user email in navbar
+    const user = JSON.parse(localStorage.getItem("devlens_user") || "{}");
+    if (user.email) {
+      document.getElementById("user-email").textContent = user.email;
+    }
+  </script>
 </body>
 </html>

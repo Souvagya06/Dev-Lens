@@ -1,46 +1,228 @@
-const logoutBtn = document.getElementById("logoutBtn");
+// ── ROLE SELECTION ────────────────────────────────────────
+let selectedRole = "fullstack";
 
-logoutBtn.addEventListener("click", () => {
-  window.location.href = "../pages/index.html";
-});
-
-const recentAnalysisContainer = document.getElementById("recent-analysis");
-
-// Example recent analysis data
-const recentAnalysis = [
-  "Player performance report",
-  "Tournament ranking analysis",
-];
-
-// Check if recent analysis exists
-if (recentAnalysis.length === 0) {
-  recentAnalysisContainer.innerHTML = `
-    <p class="text-gray-400 text-sm">No recent analysis</p>
-  `;
-} else {
-  recentAnalysisContainer.innerHTML = "";
-
-  recentAnalysis.forEach((item) => {
-    const analysisCard = document.createElement("div");
-
-    analysisCard.className =
-      "bg-zinc-800 text-white p-4 rounded-lg mb-3 border border-zinc-700";
-
-    const currentTime = new Date().toLocaleString();
-
-    analysisCard.innerHTML = `
-      <h3 class="font-semibold text-lg">Recent Performance Analysis</h3>
-      
-      <p class="text-sm text-gray-300 mt-1">
-        ${item}
-      </p>
-
-      <div class="flex items-center justify-between mt-3 text-xs text-gray-400">
-        <span>${currentTime}</span>
-        <span>AI-generated insights</span>
-      </div>
-    `;
-
-    recentAnalysisContainer.appendChild(analysisCard);
+function selectRole(role) {
+  selectedRole = role;
+  document.querySelectorAll(".role-btn").forEach((btn) => {
+    btn.classList.remove("bg-purple-600", "text-white", "border-purple-600");
+    btn.classList.add("text-gray-400", "border-[#1e1e2e]");
   });
+  const selected = document.getElementById(`role-${role}`);
+  selected.classList.add("bg-purple-600", "text-white", "border-purple-600");
+  selected.classList.remove("text-gray-400", "border-[#1e1e2e]");
 }
+
+// ── ANALYZE REPO ──────────────────────────────────────────
+async function analyzeRepo() {
+  const repoUrl = document.getElementById("repoUrl").value.trim();
+
+  if (!repoUrl) {
+    showPopup("Please paste a GitHub URL", "error");
+    return;
+  }
+
+  if (!repoUrl.includes("github.com")) {
+    showPopup("Please enter a valid GitHub URL", "error");
+    return;
+  }
+
+  // Show loading screen
+  document.getElementById("main-section").classList.add("hidden");
+  document.getElementById("loading-section").classList.remove("hidden");
+
+  startAgentLogs();
+
+  try {
+    const token = localStorage.getItem("devlens_token");
+
+    const response = await fetch("/api/repo/analyze", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ repoUrl, role: selectedRole })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      localStorage.setItem("devlens_analysisId", data.analysisId);
+      localStorage.setItem("devlens_repoName", data.repo);
+      showPopup("Analysis complete! Loading dashboard...", "success");
+      setTimeout(() => {
+        window.location.href = "/dashboard.html";
+      }, 1000);
+    } else {
+      showError(data.message || "Analysis failed");
+    }
+  } catch (err) {
+    showError("Server error. Make sure backend is running.");
+  }
+}
+
+function showError(message) {
+  document.getElementById("main-section").classList.remove("hidden");
+  document.getElementById("loading-section").classList.add("hidden");
+  showPopup(message, "error");
+}
+
+// ── AGENT LOG ANIMATION ───────────────────────────────────
+function startAgentLogs() {
+  const logs = [
+    "[Repo Agent] Fetching repository file tree...",
+    "[Repo Agent] Cloning repository...",
+    "[Dependency Agent] Parsing import statements...",
+    "[Dependency Agent] Building dependency graph...",
+    "[AI Agent] Sending files to Gemini...",
+    "[AI Agent] Generating file summaries...",
+    "[Blast Radius Agent] Computing impact chains...",
+    "[Onboarding Agent] Building your learning path...",
+    "[Risk Agent] Calculating danger scores...",
+    "[Coordinator] Assembling final analysis...",
+  ];
+
+  const logBox = document.getElementById("agent-logs");
+  logBox.innerHTML = "";
+  let i = 0;
+
+  const interval = setInterval(() => {
+    if (i >= logs.length) {
+      clearInterval(interval);
+      return;
+    }
+    const line = document.createElement("div");
+    line.textContent = logs[i];
+    line.style.opacity = "0";
+    line.style.transition = "opacity 0.4s ease";
+    logBox.appendChild(line);
+    setTimeout(() => (line.style.opacity = "1"), 50);
+    logBox.scrollTop = logBox.scrollHeight;
+
+    const progress = Math.round(((i + 1) / logs.length) * 100);
+    document.getElementById("progress-bar").style.width = `${progress}%`;
+
+    i++;
+  }, 2500);
+}
+
+// ── LOAD PAST ANALYSES ────────────────────────────────────
+async function loadPastAnalyses() {
+  try {
+    const token = localStorage.getItem("devlens_token");
+    const res = await fetch("/api/repo/history", {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    const container = document.getElementById("past-analyses");
+
+    if (!data.success || data.analyses.length === 0) {
+      container.innerHTML = `
+        <p class="text-gray-500 text-sm col-span-3">
+          No analyses yet. Paste a GitHub URL above to get started.
+        </p>`;
+      return;
+    }
+
+    container.innerHTML = data.analyses.map((a) => `
+      <div onclick="openAnalysis('${a.id}', '${a.repo_name}')"
+        class="bg-[#13131a] border border-[#1e1e2e] rounded-xl p-5 cursor-pointer
+               hover:border-purple-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.15)]
+               transition-all duration-200">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-white font-bold text-sm">${a.repo_name}</h3>
+          <span class="text-xs px-2 py-1 rounded-full font-bold ${getHealthColor(a.health_score)}">
+            ${a.health_score ?? "—"}
+          </span>
+        </div>
+        <p class="text-gray-500 text-xs mb-3 truncate">${a.repo_url}</p>
+        <div class="flex gap-4 text-gray-500 text-xs mb-3">
+          <span>📄 ${a.total_files ?? 0} files</span>
+          <span>🕐 ${formatDate(a.created_at)}</span>
+        </div>
+        <div class="text-purple-400 text-xs font-medium">View Dashboard →</div>
+      </div>
+    `).join("");
+
+  } catch (err) {
+    console.error("Failed to load past analyses:", err);
+  }
+}
+
+function openAnalysis(id, repo) {
+  localStorage.setItem("devlens_analysisId", id);
+  localStorage.setItem("devlens_repoName", repo);
+  window.location.href = "/dashboard.html";
+}
+
+function getHealthColor(score) {
+  if (!score) return "bg-gray-800 text-gray-400";
+  if (score >= 70) return "bg-green-900 text-green-300";
+  if (score >= 40) return "bg-yellow-900 text-yellow-300";
+  return "bg-red-900 text-red-300";
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return "Recently";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+// ── POPUP ─────────────────────────────────────────────────
+function showPopup(message, type = "error") {
+  const existing = document.getElementById("devlens-popup");
+  if (existing) existing.remove();
+
+  const popup = document.createElement("div");
+  popup.id = "devlens-popup";
+  popup.style.cssText = `
+    position: fixed; top: 24px; left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px; border-radius: 8px;
+    font-family: Inter, sans-serif; font-size: 14px; font-weight: 500;
+    z-index: 9999; box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    transition: opacity 0.4s ease; white-space: nowrap;
+    ${type === "success"
+      ? "background:#10b981;color:#fff;border:1px solid #059669;"
+      : "background:#ef4444;color:#fff;border:1px solid #dc2626;"}
+  `;
+  popup.textContent = message;
+  document.body.appendChild(popup);
+
+  setTimeout(() => {
+    popup.style.opacity = "0";
+    setTimeout(() => popup.remove(), 400);
+  }, 3000);
+}
+
+// ── LOGOUT ────────────────────────────────────────────────
+function logout() {
+  localStorage.removeItem("devlens_token");
+  localStorage.removeItem("devlens_user");
+  localStorage.removeItem("devlens_analysisId");
+  localStorage.removeItem("devlens_repoName");
+  window.location.href = "/login.html";
+}
+
+// ── PROTECT PAGE ──────────────────────────────────────────
+const token = localStorage.getItem("devlens_token");
+if (!token) {
+  window.location.href = "/login.html";
+}
+
+// Show user email in navbar
+const user = JSON.parse(localStorage.getItem("devlens_user") || "{}");
+if (user.email) {
+  const emailEl = document.getElementById("user-email");
+  if (emailEl) emailEl.textContent = user.email;
+}
+
+// Wire logout button (works for both dashboard.html and home.html)
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", logout);
+}
+
+// Load past analyses on page load
+loadPastAnalyses();
