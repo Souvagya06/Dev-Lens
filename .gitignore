@@ -1,3 +1,5 @@
-\backend\.env
-\backend\.env.example
-node_modules
+backend/.env
+backend/.env.example
+node_modules/
+dist/
+.DS_Store
