@@ -189,37 +189,12 @@
             >DevLens</span
           >
         </div>
-        <div class="hidden md:flex items-center gap-xl">
+        
           <a
-            class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md"
-            href="#"
-            >Features</a
-          >
-          <a
-            class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md"
-            href="#"
-            >How It Works</a
-          >
-          <a
-            class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md"
-            href="#"
-            >Tech Stack</a
-          >
-          <a
-            class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md"
-            href="#"
-            >Pricing</a
-          >
-        </div>
-        <div class="flex items-center gap-md">
-          <button
-            class="hidden md:block text-on-surface-variant hover:text-on-surface font-label-md text-label-md px-md py-sm transition-colors">
-            Sign In
-          </button>
-          <button
-            class="btn-primary text-white font-label-md text-label-md px-lg py-sm rounded-lg active:scale-95 transition-transform">
+            href="./login.html"
+            class="btn-primary text-white font-label-md text-label-md px-lg py-sm rounded-lg active:scale-95 transition-transform inline-block text-center">
             Get Started
-          </button>
+          </a>
         </div>
       </nav>
     </header>
@@ -229,7 +204,7 @@
         <div
           class="inline-flex items-center gap-sm px-md py-xs rounded-full bg-primary-container/10 border border-primary-container/20 text-primary-fixed-dim font-label-sm text-label-sm mb-lg">
           <span class="material-symbols-outlined text-[16px]">bolt</span>
-          Built with Claude AI + Gemini
+          Built by Quantum Coders
         </div>
         <h1 class="font-headline-xl text-headline-xl mb-md">
           Understand Any Codebase <br />
@@ -242,15 +217,13 @@
           and AI-powered answers — instantly.
         </p>
         <div class="flex flex-col sm:flex-row justify-center gap-md mb-2xl">
-          <button
+          <a
+            href="./login.html"
             class="btn-primary text-white font-label-md text-label-md px-xl py-md rounded-lg flex items-center justify-center gap-sm">
             Start Analyzing Free
             <span class="material-symbols-outlined">arrow_forward</span>
-          </button>
-          <button
-            class="border border-border bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md px-xl py-md rounded-lg transition-colors">
-            View Demo
-          </button>
+          </a>
+          
         </div>
         <!-- Dashboard Mockup -->
         <div class="relative max-w-5xl mx-auto mt-xl dashboard-fade">
@@ -378,38 +351,39 @@
           </h2>
           <div class="h-1 w-24 bg-primary mx-auto rounded-full"></div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
-          <!-- Stat Card 1 -->
-          <div
-            class="glass p-xl rounded-xl text-center border-t-2 border-t-danger">
-            <div class="font-headline-xl text-headline-xl text-danger mb-sm">
-              2–4 Weeks
-            </div>
-            <div class="font-body-md text-body-md text-on-surface-variant">
-              Average developer onboarding time for a mature codebase.
-            </div>
-          </div>
-          <!-- Stat Card 2 -->
-          <div
-            class="glass p-xl rounded-xl text-center border-t-2 border-t-warning">
-            <div class="font-headline-xl text-headline-xl text-warning mb-sm">
-              73%
-            </div>
-            <div class="font-body-md text-body-md text-on-surface-variant">
-              Of new devs break production in their first 30 days.
-            </div>
-          </div>
-          <!-- Stat Card 3 -->
-          <div
-            class="glass p-xl rounded-xl text-center border-t-2 border-t-success">
-            <div class="font-headline-xl text-headline-xl text-success mb-sm">
-              10x
-            </div>
-            <div class="font-body-md text-body-md text-on-surface-variant">
-              Faster onboarding with DevLens AI visualization.
-            </div>
-          </div>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-lg w-full">
+  
+  <!-- Card 1 -->
+  <div class="glass p-xl rounded-xl text-center border-t-2 border-t-primary flex flex-col justify-center min-h-[220px]">
+    <div class="font-headline-xl text-headline-xl text-primary mb-sm">
+      1000+
+    </div>
+    <div class="font-body-md text-body-md text-on-surface-variant">
+      Files mapped and analyzed autonomously in seconds.
+    </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="glass p-xl rounded-xl text-center border-t-2 border-t-warning flex flex-col justify-center min-h-[220px]">
+    <div class="font-headline-xl text-headline-xl text-warning mb-sm">
+      90%
+    </div>
+    <div class="font-body-md text-body-md text-on-surface-variant">
+      Faster codebase understanding for new developers.
+    </div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="glass p-xl rounded-xl text-center border-t-2 border-t-success flex flex-col justify-center min-h-[220px]">
+    <div class="font-headline-xl text-headline-xl text-success mb-sm">
+      Instant
+    </div>
+    <div class="font-body-md text-body-md text-on-surface-variant">
+      Blast radius analysis before changing critical files.
+    </div>
+  </div>
+
+</div>
       </section>
       <!-- Section 4: Features -->
       <section class="py-24 bg-surface-container-lowest">
@@ -532,39 +506,7 @@
           </div>
         </div>
       </section>
-      <!-- Section 6: Tech Stack -->
-      <section class="py-16 border-y border-outline-variant/10">
-        <div class="max-w-container-max mx-auto px-lg text-center">
-          <p
-            class="font-label-sm text-label-sm text-outline uppercase tracking-[0.2em] mb-xl">
-            Powered By The Best
-          </p>
-          <div
-            class="flex flex-wrap justify-center items-center gap-xl md:gap-2xl opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-            <span class="font-headline-md font-bold text-on-surface"
-              >Claude AI</span
-            >
-            <span class="font-headline-md font-bold text-on-surface"
-              >Gemini</span
-            >
-            <span class="font-headline-md font-bold text-on-surface"
-              >GitHub</span
-            >
-            <span class="font-headline-md font-bold text-on-surface"
-              >Node.js</span
-            >
-            <span class="font-headline-md font-bold text-on-surface"
-              >D3.js</span
-            >
-            <span class="font-headline-md font-bold text-on-surface"
-              >Turso</span
-            >
-            <span class="font-headline-md font-bold text-on-surface"
-              >Clerk</span
-            >
-          </div>
-        </div>
-      </section>
+      
       <!-- Section 7: Final CTA -->
       <section class="py-32 relative overflow-hidden">
         <!-- Radial Glow Background -->
@@ -580,13 +522,12 @@
             Join 5,000+ developers who ship faster and break less with
             AI-powered code visualization.
           </p>
-          <button
+          <a
+            href="./login.html"
             class="btn-primary text-white font-headline-md text-headline-md px-2xl py-lg rounded-xl active:scale-95 transition-transform shadow-lg shadow-primary/20">
-            Analyze My Codebase Now
-          </button>
-          <p class="mt-md font-label-sm text-label-sm text-outline">
-            Free for public repositories. No credit card required.
-          </p>
+            Analyze Codebase Now
+          </a>
+          
         </div>
       </section>
     </main>
