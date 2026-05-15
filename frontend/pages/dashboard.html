@@ -1,405 +1,678 @@
 <!DOCTYPE html>
-
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Dashboard - DevLens</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "background": "#131318",
-                        "surface-dim": "#131318",
-                        "on-tertiary": "#4f2500",
-                        "on-secondary-fixed-variant": "#004395",
-                        "tertiary-fixed-dim": "#ffb784",
-                        "tertiary-container": "#a15100",
-                        "warning": "#f59e0b",
-                        "text-secondary": "#8b93a1",
-                        "inverse-on-surface": "#303036",
-                        "inverse-primary": "#732ee4",
-                        "on-primary-container": "#ede0ff",
-                        "on-surface": "#e4e1e9",
-                        "surface-container-low": "#1b1b20",
-                        "tertiary-fixed": "#ffdcc6",
-                        "secondary-fixed": "#d8e2ff",
-                        "primary": "#d2bbff",
-                        "border": "#1e1e2e",
-                        "primary-fixed-dim": "#d2bbff",
-                        "error-container": "#93000a",
-                        "success": "#10b981",
-                        "primary-fixed": "#eaddff",
-                        "secondary-fixed-dim": "#adc6ff",
-                        "surface-container-lowest": "#0e0e13",
-                        "surface-container-high": "#2a292f",
-                        "on-primary-fixed": "#25005a",
-                        "danger": "#ef4444",
-                        "surface-tint": "#d2bbff",
-                        "secondary": "#adc6ff",
-                        "tertiary": "#ffb784",
-                        "surface": "#13131a",
-                        "outline": "#958da1",
-                        "text-primary": "#ffffff",
-                        "surface-container": "#1f1f25",
-                        "on-secondary-fixed": "#001a42",
-                        "surface-container-highest": "#35343a",
-                        "on-background": "#e4e1e9",
-                        "on-secondary": "#002e6a",
-                        "on-error-container": "#ffdad6",
-                        "on-tertiary-fixed-variant": "#713700",
-                        "secondary-container": "#0566d9",
-                        "on-surface-variant": "#ccc3d8",
-                        "inverse-surface": "#e4e1e9",
-                        "primary-container": "#7c3aed",
-                        "on-tertiary-container": "#ffe0cd",
-                        "on-tertiary-fixed": "#301400",
-                        "error": "#ffb4ab",
-                        "on-secondary-container": "#e6ecff",
-                        "outline-variant": "#4a4455",
-                        "surface-bright": "#39383e",
-                        "on-primary": "#3f008e",
-                        "surface-variant": "#35343a",
-                        "on-error": "#690005",
-                        "on-primary-fixed-variant": "#5a00c6"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "container-max": "1440px",
-                        "2xl": "48px",
-                        "base": "4px",
-                        "sm": "8px",
-                        "md": "16px",
-                        "gutter": "24px",
-                        "xl": "32px",
-                        "lg": "24px",
-                        "xs": "4px"
-                    },
-                    "fontFamily": {
-                        "headline-md": ["Inter"],
-                        "label-sm": ["JetBrains Mono"],
-                        "body-lg": ["Inter"],
-                        "headline-xl": ["Inter"],
-                        "body-sm": ["Inter"],
-                        "headline-lg": ["Inter"],
-                        "body-md": ["Inter"],
-                        "label-md": ["JetBrains Mono"]
-                    },
-                    "fontSize": {
-                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
-                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
-                    }
-                }
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                "colors": {
+                    "background": "#131318","surface-dim": "#131318","on-tertiary": "#4f2500","on-secondary-fixed-variant": "#004395","tertiary-fixed-dim": "#ffb784","tertiary-container": "#a15100","warning": "#f59e0b","text-secondary": "#8b93a1","inverse-on-surface": "#303036","inverse-primary": "#732ee4","on-primary-container": "#ede0ff","on-surface": "#e4e1e9","surface-container-low": "#1b1b20","tertiary-fixed": "#ffdcc6","secondary-fixed": "#d8e2ff","primary": "#d2bbff","border": "#1e1e2e","primary-fixed-dim": "#d2bbff","error-container": "#93000a","success": "#10b981","primary-fixed": "#eaddff","secondary-fixed-dim": "#adc6ff","surface-container-lowest": "#0e0e13","surface-container-high": "#2a292f","on-primary-fixed": "#25005a","danger": "#ef4444","surface-tint": "#d2bbff","secondary": "#adc6ff","tertiary": "#ffb784","surface": "#13131a","outline": "#958da1","text-primary": "#ffffff","surface-container": "#1f1f25","on-secondary-fixed": "#001a42","surface-container-highest": "#35343a","on-background": "#e4e1e9","on-secondary": "#002e6a","on-error-container": "#ffdad6","on-tertiary-fixed-variant": "#713700","secondary-container": "#0566d9","on-surface-variant": "#ccc3d8","inverse-surface": "#e4e1e9","primary-container": "#7c3aed","on-tertiary-container": "#ffe0cd","on-tertiary-fixed": "#301400","error": "#ffb4ab","on-secondary-container": "#e6ecff","outline-variant": "#4a4455","surface-bright": "#39383e","on-primary": "#3f008e","surface-variant": "#35343a","on-error": "#690005","on-primary-fixed-variant": "#5a00c6"
+                },
+                "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
+                "spacing": {"container-max": "1440px","2xl": "48px","base": "4px","sm": "8px","md": "16px","gutter": "24px","xl": "32px","lg": "24px","xs": "4px"},
+                "fontFamily": {"headline-md": ["Inter"],"label-sm": ["JetBrains Mono"],"body-lg": ["Inter"],"headline-xl": ["Inter"],"body-sm": ["Inter"],"headline-lg": ["Inter"],"body-md": ["Inter"],"label-md": ["JetBrains Mono"]},
+                "fontSize": {"headline-md": ["24px", {"lineHeight": "32px","fontWeight": "600"}],"label-sm": ["12px", {"lineHeight": "16px","fontWeight": "500"}],"body-lg": ["18px", {"lineHeight": "28px","fontWeight": "400"}],"headline-xl": ["48px", {"lineHeight": "56px","letterSpacing": "-0.02em","fontWeight": "700"}],"body-sm": ["14px", {"lineHeight": "20px","fontWeight": "400"}],"headline-lg": ["32px", {"lineHeight": "40px","letterSpacing": "-0.01em","fontWeight": "600"}],"body-md": ["16px", {"lineHeight": "24px","fontWeight": "400"}],"label-md": ["14px", {"lineHeight": "20px","fontWeight": "500"}]}
             }
         }
-    </script>
+    }
+</script>
 <style>
-        /* Hide scrollbar for layout */
-        body { overflow: hidden; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
+    body { overflow: hidden; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    #chat-panel { transition: opacity 0.2s ease, transform 0.2s ease; }
+    #chat-panel.hidden-panel { opacity: 0; pointer-events: none; transform: translateY(12px) scale(0.97); }
+    #chat-panel.visible-panel { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+    .file-item { transition: background 0.12s; }
+    .file-item:hover { background: rgba(42,41,47,0.7); }
+    @keyframes borderPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.4); }
+        50% { box-shadow: 0 0 0 4px rgba(124,58,237,0.1); }
+    }
+    .step-active { animation: borderPulse 2s ease-in-out infinite; }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up { animation: fadeInUp 0.3s ease forwards; }
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+    .skeleton {
+        background: linear-gradient(90deg, #1b1b20 25%, #2a292f 50%, #1b1b20 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 4px;
+    }
+    /* Active nav link underline — matches landing page purple underline */
+    .nav-active {
+        color: #d2bbff;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 4px;
+    }
+    .nav-active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #d2bbff;
+        border-radius: 2px;
+    }
+</style>
 </head>
-<body class="bg-background text-on-background h-screen flex flex-col font-body-md overflow-hidden">
-<!-- TopNavBar -->
-<nav class="bg-background/80 backdrop-blur-md text-primary font-body-md text-body-md fixed top-0 w-full z-50 shadow-sm flex items-center justify-between px-gutter h-16 w-full border-b border-border transition-all duration-200 ease-in-out">
-<div class="flex items-center gap-md">
-<!-- Simplified Logo for Context -->
-<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary-container to-secondary flex items-center justify-center">
-<div class="w-4 h-4 rounded-full bg-background"></div>
-</div>
-<span class="font-headline-md text-headline-md font-bold text-primary">DevLens</span>
-<!-- Dashboard Context -->
-<div class="ml-xl flex items-center gap-sm">
-<span class="font-label-md text-label-md text-text-primary">tiangolo / fastapi</span>
-<div class="flex items-center gap-xs px-2 py-1 rounded bg-success/10 border border-success/20">
-<span class="w-2 h-2 rounded-full bg-success"></span>
-<span class="font-label-sm text-label-sm text-success">Health 98</span>
-</div>
-</div>
-</div>
-<div class="flex items-center gap-lg">
-<div class="flex gap-md">
-<a class="text-text-secondary hover:text-text-primary transition-colors flex items-center gap-xs font-label-md text-label-md" href="#">
-<span class="material-symbols-outlined text-[20px]">folder</span> Repositories
-                </a>
-<a class="text-primary font-bold border-b-2 border-primary pb-1 flex items-center gap-xs font-label-md text-label-md" href="#">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">analytics</span> Analytics
-                </a>
-<a class="text-text-secondary hover:text-text-primary transition-colors flex items-center gap-xs font-label-md text-label-md" href="#">
-<span class="material-symbols-outlined text-[20px]">settings</span> Settings
-                </a>
-</div>
-<div class="flex items-center gap-sm border-l border-border pl-md">
-<button class="p-xs text-text-secondary hover:bg-surface-container-high/50 hover:text-text-primary rounded-full transition-colors">
-<span class="material-symbols-outlined">notifications</span>
-</button>
-<button class="p-xs text-text-secondary hover:bg-surface-container-high/50 hover:text-text-primary rounded-full transition-colors">
-<span class="material-symbols-outlined">help</span>
-</button>
-<div class="w-8 h-8 rounded-full overflow-hidden border border-border ml-sm">
-<img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvYHHsc0a4bhibCOUfW8nK1UthbKN-_OsAoRN-15_ecrGTPYRWZEQPvphEd6gzaUINEXULjXqvSGJ8T3u49paqx-UBmlc_GGJa22mJyXyTcgPT__uC_D3Qpi1UwP8HnzXDVYpuScbOXrGvLAVXIteyIh556Zeer6iXAQ5rTzGqSNcQVMFj_Uj4fqj0Z-fq_wbnEsk0j-5_3IVFpR26bVRKkpxQa1xzzPHf7vMXt8_LyKJpUck054ARnfHPocaU9XMfbNUTZrS1zPAk"/>
-</div>
-</div>
-</div>
-</nav>
+<body class="text-on-surface font-body-md text-body-md min-h-screen flex flex-col">
+
+<!-- Nav — exactly matching landing page -->
+<header class="fixed top-0 w-full z-50 bg-background/90 backdrop-blur-xl">
+  <nav class="flex justify-between items-center px-lg h-[52px] max-w-container-max mx-auto">
+    <!-- Left: Logo -->
+    <div class="flex items-center gap-sm">
+      <span class="material-symbols-outlined text-primary text-[28px]" style="font-variation-settings:'FILL' 1">visibility</span>
+      <span class="font-headline-md text-[20px] font-bold text-on-surface tracking-tight">DevLens</span>
+    </div>
+    <!-- Center: Nav Links -->
+    <div class="hidden md:flex items-center gap-[36px]">
+      <a class="nav-active font-body-md text-body-md" href="#">Repositories</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Analytics</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Settings</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Pricing</a>
+    </div>
+    <!-- Right: Log Out -->
+    <div class="flex items-center">
+      <button
+        class="bg-gradient-to-r from-red-500 to-red-700 text-white font-label-md text-label-md px-lg py-[7px] rounded-lg hover:shadow-[0_0_20px_rgba(239,68,68,0.45)] hover:scale-[1.02] active:scale-95 transition-all duration-300">
+        Log Out
+      </button>
+    </div>
+  </nav>
+</header>
+
 <!-- Main Dashboard Layout -->
-<main class="flex-1 flex mt-16 h-[calc(100vh-64px)] overflow-hidden">
-<!-- Left Panel: Files -->
-<aside class="w-1/5 min-w-[240px] bg-surface border-r border-border flex flex-col">
-<div class="p-md border-b border-border flex items-center justify-between">
-<h2 class="font-label-md text-label-md font-bold text-text-primary uppercase tracking-wider">Explorer</h2>
-<button class="text-text-secondary hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-[18px]">more_horiz</span>
-</button>
-</div>
-<div class="p-sm border-b border-border">
-<div class="relative flex items-center w-full bg-background border border-border rounded focus-within:border-primary focus-within:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all">
-<span class="material-symbols-outlined absolute left-sm text-text-secondary text-[16px]">search</span>
-<input class="w-full bg-transparent border-none text-text-primary font-label-sm text-label-sm py-1.5 pl-xl pr-sm focus:ring-0 placeholder:text-text-secondary" placeholder="Search files..." type="text"/>
-</div>
-</div>
-<div class="flex-1 overflow-y-auto p-sm font-label-sm text-label-sm no-scrollbar">
-<!-- File Tree Item -->
-<div class="flex items-center gap-xs py-1 px-xs hover:bg-surface-container-high rounded cursor-pointer group">
-<span class="material-symbols-outlined text-[16px] text-text-secondary transition-transform group-hover:text-primary">expand_more</span>
-<span class="material-symbols-outlined text-[16px] text-secondary">folder</span>
-<span class="text-text-primary">fastapi</span>
-</div>
-<div class="ml-lg border-l border-border/50 pl-xs flex flex-col gap-0.5">
-<!-- File -->
-<div class="flex items-center justify-between py-1 px-xs hover:bg-surface-container-high rounded cursor-pointer">
-<div class="flex items-center gap-xs">
-<span class="material-symbols-outlined text-[16px] text-text-secondary">description</span>
-<span class="text-text-secondary hover:text-text-primary transition-colors">__init__.py</span>
-</div>
-</div>
-<!-- File with Status -->
-<div class="flex items-center justify-between py-1 px-xs hover:bg-surface-container-high rounded cursor-pointer bg-primary/5">
-<div class="flex items-center gap-xs">
-<span class="material-symbols-outlined text-[16px] text-primary">description</span>
-<span class="text-primary font-medium">applications.py</span>
-</div>
-<span class="w-2 h-2 rounded-full bg-danger animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]"></span>
-</div>
-<!-- File with Status -->
-<div class="flex items-center justify-between py-1 px-xs hover:bg-surface-container-high rounded cursor-pointer">
-<div class="flex items-center gap-xs">
-<span class="material-symbols-outlined text-[16px] text-text-secondary">description</span>
-<span class="text-text-secondary hover:text-text-primary transition-colors">routing.py</span>
-</div>
-<span class="w-1.5 h-1.5 rounded-full bg-warning"></span>
-</div>
-<!-- Folder -->
-<div class="flex items-center gap-xs py-1 px-xs hover:bg-surface-container-high rounded cursor-pointer group mt-1">
-<span class="material-symbols-outlined text-[16px] text-text-secondary transition-transform group-hover:text-primary -rotate-90">expand_more</span>
-<span class="material-symbols-outlined text-[16px] text-secondary">folder</span>
-<span class="text-text-secondary group-hover:text-text-primary transition-colors">dependencies</span>
-</div>
-<!-- File with Status -->
-<div class="flex items-center justify-between py-1 px-xs hover:bg-surface-container-high rounded cursor-pointer">
-<div class="flex items-center gap-xs">
-<span class="material-symbols-outlined text-[16px] text-text-secondary">description</span>
-<span class="text-text-secondary hover:text-text-primary transition-colors">security.py</span>
-</div>
-<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
-</div>
-</div>
-</div>
-</aside>
-<!-- Center Panel: Graph Canvas -->
-<section class="w-1/2 relative bg-background flex flex-col border-r border-border">
-<!-- Canvas Header/Tools -->
-<div class="absolute top-md right-md z-10 flex items-center gap-sm bg-surface/80 backdrop-blur-md p-1.5 rounded-lg border border-border shadow-sm">
-<button class="p-xs text-text-secondary hover:text-text-primary hover:bg-surface-container-high rounded transition-colors" title="Fit to Screen">
-<span class="material-symbols-outlined text-[20px]">fit_screen</span>
-</button>
-<button class="p-xs text-text-secondary hover:text-text-primary hover:bg-surface-container-high rounded transition-colors" title="Reset Zoom">
-<span class="material-symbols-outlined text-[20px]">zoom_in_map</span>
-</button>
-<div class="w-px h-4 bg-border mx-1"></div>
-<button class="p-xs text-text-secondary hover:text-text-primary hover:bg-surface-container-high rounded transition-colors" title="Filter View">
-<span class="material-symbols-outlined text-[20px]">filter_list</span>
-</button>
-</div>
-<!-- Main Graph Area (Empty Div as requested) -->
-<div class="flex-1 w-full h-full relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(30,30,46,0.3)_0%,rgba(10,10,15,1)_100%)]" id="graph-canvas">
-<!-- Abstract Representation of graph for visual filler since JS is disabled -->
-<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#1e1e2e 1px, transparent 1px); background-size: 24px 24px;"></div>
-<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-<div class="w-24 h-24 mx-auto mb-md rounded-full border-2 border-primary/20 flex items-center justify-center animate-[spin_10s_linear_infinite]">
-<div class="w-16 h-16 rounded-full border border-secondary/30 flex items-center justify-center animate-[spin_5s_linear_infinite_reverse]">
-<div class="w-4 h-4 rounded-full bg-primary shadow-[0_0_15px_rgba(124,58,237,0.5)]"></div>
-</div>
-</div>
-<p class="font-label-md text-label-md text-text-secondary tracking-widest uppercase">Topology Canvas</p>
-</div>
-</div>
-<!-- Legend Bar -->
-<div class="h-12 bg-surface border-t border-border flex items-center px-lg gap-lg font-label-sm text-label-sm">
-<div class="flex items-center gap-xs">
-<span class="w-2.5 h-2.5 rounded-full bg-danger shadow-[0_0_5px_rgba(239,68,68,0.5)]"></span>
-<span class="text-text-secondary">High Risk</span>
-</div>
-<div class="flex items-center gap-xs">
-<span class="w-2.5 h-2.5 rounded-full bg-warning shadow-[0_0_5px_rgba(245,158,11,0.5)]"></span>
-<span class="text-text-secondary">Medium</span>
-</div>
-<div class="flex items-center gap-xs">
-<span class="w-2.5 h-2.5 rounded-full bg-success shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
-<span class="text-text-secondary">Safe</span>
-</div>
-<div class="flex items-center gap-xs ml-auto">
-<span class="w-2.5 h-2.5 rounded-full bg-secondary shadow-[0_0_5px_rgba(173,198,255,0.5)]"></span>
-<span class="text-text-secondary">Entry Point</span>
-</div>
-</div>
-</section>
-<!-- Right Panel: AI Sidebar -->
-<aside class="flex-1 min-w-[320px] bg-surface flex flex-col">
-<!-- Tabs -->
-<div class="flex border-b border-border">
-<button class="flex-1 py-3 px-4 font-label-md text-label-md font-bold text-primary border-b-2 border-primary bg-primary/5 transition-colors flex items-center justify-center gap-xs">
-<span class="material-symbols-outlined text-[18px]">smart_toy</span> AI Chat
-                </button>
-<button class="flex-1 py-3 px-4 font-label-md text-label-md text-text-secondary hover:text-text-primary hover:bg-surface-container-high transition-colors flex items-center justify-center gap-xs">
-<span class="material-symbols-outlined text-[18px]">checklist</span> Onboarding Quest
-                </button>
-</div>
-<!-- AI Chat View -->
-<div class="flex-1 flex flex-col overflow-hidden relative">
-<!-- Chat Messages Scroll Area -->
-<div class="flex-1 overflow-y-auto p-md space-y-lg no-scrollbar">
-<!-- AI Message -->
-<div class="flex gap-md">
-<div class="w-8 h-8 rounded bg-surface-container-highest border border-border flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-[18px] text-primary">smart_toy</span>
-</div>
-<div class="flex-1 flex flex-col gap-sm">
-<div class="font-label-sm text-label-sm text-text-secondary">DevLens AI <span class="ml-2 text-text-secondary/50">10:24 AM</span></div>
-<div class="bg-surface-container-low border border-border rounded-lg rounded-tl-none p-sm font-body-sm text-body-sm text-text-primary">
-                                I've analyzed <code class="font-label-sm text-secondary bg-background px-1 py-0.5 rounded border border-border">applications.py</code>. There is a potential unhandled exception in the initialization sequence. Would you like to see the trace?
-                            </div>
-</div>
-</div>
-<!-- User Message -->
-<div class="flex gap-md flex-row-reverse">
-<div class="w-8 h-8 rounded overflow-hidden border border-border shrink-0">
-<img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSvWE2VKX5M1rZ0xPwguEhSzJSgv0q-x3s1OyAV6xTMv2vQYu0I5vZh_7lkGoEenjhYjb3FBU1LrSUh1ZmL7C88gaUg8FvcTqMzVJ9YKmt_TGM-9yaN1gz3U-Y60WmVRPbnN7NwoapTsju7Bp6SE5F8yZCN9mdNQolwFqYRlQ8aPLDpbQ76ri7bc7X7gJE99sYmPrtGWWWTGYfWQyE4D2ohNnweFK26I8csy75k1-hFnXdV3Vf3xWxqa-zqt8DGdQIuWl90SJh_nEO"/>
-</div>
-<div class="flex-1 flex flex-col gap-sm items-end">
-<div class="font-label-sm text-label-sm text-text-secondary"><span class="mr-2 text-text-secondary/50">10:25 AM</span> You</div>
-<div class="bg-primary-container text-on-primary-container rounded-lg rounded-tr-none p-sm font-body-sm text-body-sm shadow-[0_0_10px_rgba(124,58,237,0.1)]">
-                                Yes, show me the trace and highlight the vulnerable node in the graph.
-                            </div>
-</div>
-</div>
-<!-- AI Message with Action -->
-<div class="flex gap-md">
-<div class="w-8 h-8 rounded bg-surface-container-highest border border-border flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-[18px] text-primary">smart_toy</span>
-</div>
-<div class="flex-1 flex flex-col gap-sm">
-<div class="font-label-sm text-label-sm text-text-secondary">DevLens AI <span class="ml-2 text-text-secondary/50">10:25 AM</span></div>
-<div class="bg-surface-container-low border border-border rounded-lg rounded-tl-none p-sm font-body-sm text-body-sm text-text-primary">
-<p class="mb-sm">I've highlighted the node in <span class="text-danger font-bold">Red</span> on the canvas.</p>
-<div class="bg-background border border-border rounded p-sm font-label-sm text-label-sm text-text-secondary overflow-x-auto">
-<code>
-<span class="text-primary">def</span> <span class="text-secondary">__init__</span>(self, ...):<br/>
-                                          ...<br/>
-                                          self.router = APIRouter(...) <span class="text-danger"># Risk Point</span>
-</code>
-</div>
-<button class="mt-sm px-3 py-1.5 rounded border border-primary/50 text-primary font-label-sm text-label-sm hover:bg-primary/10 transition-colors flex items-center gap-xs w-fit">
-<span class="material-symbols-outlined text-[16px]">visibility</span> Focus Node
-                                </button>
-</div>
-</div>
-</div>
-</div>
-<!-- Input Area -->
-<div class="p-md border-t border-border bg-surface">
-<div class="relative flex items-end w-full bg-background border border-border rounded-lg focus-within:border-primary focus-within:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all p-1">
-<button class="p-2 text-text-secondary hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-[20px]">add_circle</span>
-</button>
-<textarea class="w-full bg-transparent border-none text-text-primary font-body-sm text-body-sm py-2 px-1 focus:ring-0 placeholder:text-text-secondary resize-none max-h-32 min-h-[40px] no-scrollbar" placeholder="Ask about the codebase..." rows="1"></textarea>
-<button class="p-2 text-text-secondary hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-[20px]">send</span>
-</button>
-</div>
-<div class="flex items-center justify-between mt-sm px-1">
-<div class="flex gap-xs">
-<span class="px-2 py-0.5 rounded bg-surface-container-highest text-text-secondary font-label-sm text-[10px] cursor-pointer hover:text-text-primary">/explain</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-highest text-text-secondary font-label-sm text-[10px] cursor-pointer hover:text-text-primary">/refactor</span>
-</div>
-<span class="font-label-sm text-[10px] text-text-secondary/50">DevLens GPT-4 Turbo</span>
-</div>
-</div>
-</div>
-<!-- Onboarding Quest View (Hidden in this layout state, but code provided as requested by prompt structure rules) -->
-<div class="hidden flex-1 flex flex-col overflow-hidden bg-surface">
-<div class="p-md border-b border-border bg-surface-container-low">
-<h3 class="font-headline-md text-headline-md font-bold text-text-primary mb-sm">Backend Developer Path</h3>
-<div class="flex items-center justify-between mb-xs">
-<span class="font-label-sm text-label-sm text-text-secondary">Progress</span>
-<span class="font-label-sm text-label-sm text-primary font-bold">2 of 5</span>
-</div>
-<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
-<div class="h-full bg-gradient-to-r from-primary-container to-secondary w-2/5 shadow-[0_0_8px_rgba(124,58,237,0.5)]"></div>
-</div>
-</div>
-<div class="flex-1 overflow-y-auto p-md space-y-sm no-scrollbar">
-<!-- Completed Step -->
-<div class="bg-surface-container-low border border-border rounded-lg p-sm flex items-start gap-md opacity-60">
-<div class="w-5 h-5 rounded-full bg-success text-background flex items-center justify-center shrink-0 mt-0.5">
-<span class="material-symbols-outlined text-[14px] font-bold">check</span>
-</div>
-<div>
-<h4 class="font-label-md text-label-md font-bold text-text-primary line-through">Connect Repository</h4>
-<p class="font-body-sm text-body-sm text-text-secondary mt-1">Successfully linked tiangolo/fastapi.</p>
-</div>
-</div>
-<!-- Active Step -->
-<div class="bg-background border border-primary/50 shadow-[0_0_15px_rgba(124,58,237,0.1)] rounded-lg p-sm flex items-start gap-md relative overflow-hidden">
-<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
-<div class="w-5 h-5 rounded border-2 border-primary shrink-0 mt-0.5 cursor-pointer hover:bg-primary/20 transition-colors"></div>
-<div>
-<h4 class="font-label-md text-label-md font-bold text-primary">Analyze Routing Logic</h4>
-<p class="font-body-sm text-body-sm text-text-secondary mt-1">Use the canvas to trace the main entry points in routing.py.</p>
-<button class="mt-md px-3 py-1.5 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm hover:brightness-110 transition-all shadow-sm">
-                                Start Task
-                            </button>
-</div>
-</div>
-<!-- Locked Step -->
-<div class="bg-surface-container-lowest border border-border rounded-lg p-sm flex items-start gap-md opacity-50">
-<div class="w-5 h-5 rounded border-2 border-border shrink-0 mt-0.5 flex items-center justify-center bg-surface">
-<span class="material-symbols-outlined text-[12px] text-text-secondary">lock</span>
-</div>
-<div>
-<h4 class="font-label-md text-label-md font-bold text-text-secondary">Identify Security Flaws</h4>
-<p class="font-body-sm text-body-sm text-text-secondary mt-1">Review AI suggestions for security.py.</p>
-</div>
-</div>
-</div>
-</div>
-</aside>
+<main class="flex-1 flex mt-[52px] h-[calc(100vh-52px)] overflow-hidden">
+
+    <!-- Left Panel: Explorer -->
+    <aside class="w-1/5 min-w-[240px] bg-surface border-r border-border flex flex-col">
+        <div class="p-md border-b border-border flex items-center justify-between">
+            <h2 class="font-label-md text-label-md font-bold text-text-primary uppercase tracking-wider">Explorer</h2>
+            <button class="text-text-secondary hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[18px]">more_horiz</span>
+            </button>
+        </div>
+        <!-- search — only when repo loaded -->
+        <div class="p-sm border-b border-border" id="file-search-wrap" style="display:none">
+            <div class="relative flex items-center w-full bg-background border border-border rounded focus-within:border-primary focus-within:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all">
+                <span class="material-symbols-outlined absolute left-sm text-text-secondary text-[16px]">search</span>
+                <input id="file-search" class="w-full bg-transparent border-none text-text-primary font-label-sm text-label-sm py-1.5 pl-xl pr-sm focus:ring-0 placeholder:text-text-secondary" placeholder="Search files..." type="text" oninput="filterFiles(this.value)"/>
+            </div>
+        </div>
+        <div class="flex-1 overflow-y-auto p-sm font-label-sm text-label-sm no-scrollbar" id="file-tree">
+            <!-- Empty state -->
+            <div id="explorer-empty" class="flex flex-col items-center justify-center h-full gap-md text-center px-md py-xl">
+                <span class="material-symbols-outlined text-[40px] text-text-secondary/30">folder_open</span>
+                <p class="font-label-sm text-label-sm text-text-secondary/50">Paste a GitHub URL<br/>to explore the repo</p>
+            </div>
+            <!-- Loading skeleton -->
+            <div id="explorer-loading" style="display:none" class="flex flex-col gap-2 p-sm">
+                <div class="skeleton h-4 w-3/4"></div>
+                <div class="skeleton h-3 w-1/2 ml-4"></div>
+                <div class="skeleton h-3 w-2/3 ml-4"></div>
+                <div class="skeleton h-3 w-1/2 ml-4"></div>
+                <div class="skeleton h-4 w-2/3 mt-2"></div>
+                <div class="skeleton h-3 w-3/4 ml-4"></div>
+                <div class="skeleton h-3 w-1/2 ml-4"></div>
+            </div>
+            <!-- Actual file tree -->
+            <div id="file-tree-content" style="display:none" class="fade-in-up"></div>
+        </div>
+    </aside>
+
+    <!-- Center Panel: Graph + URL input -->
+    <section class="w-1/2 relative bg-background flex flex-col border-r border-border">
+        <!-- toolbar only after load -->
+        <div id="graph-toolbar" class="absolute top-md right-md z-10 flex items-center gap-sm bg-surface/80 backdrop-blur-md p-1.5 rounded-lg border border-border shadow-sm" style="display:none">
+            <button class="p-xs text-text-secondary hover:text-text-primary hover:bg-surface-container-high rounded transition-colors" title="Fit to Screen">
+                <span class="material-symbols-outlined text-[20px]">fit_screen</span>
+            </button>
+            <button class="p-xs text-text-secondary hover:text-text-primary hover:bg-surface-container-high rounded transition-colors" title="Reset Zoom">
+                <span class="material-symbols-outlined text-[20px]">zoom_in_map</span>
+            </button>
+            <div class="w-px h-4 bg-border mx-1"></div>
+            <button class="p-xs text-text-secondary hover:text-text-primary hover:bg-surface-container-high rounded transition-colors" title="Filter View">
+                <span class="material-symbols-outlined text-[20px]">filter_list</span>
+            </button>
+        </div>
+
+        <div class="flex-1 w-full h-full relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(30,30,46,0.3)_0%,rgba(10,10,15,1)_100%)]" id="graph-canvas">
+            <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#1e1e2e 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+            <!-- Default canvas state -->
+            <div id="repo-input-state" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                <div class="w-24 h-24 mx-auto mb-md rounded-full border-2 border-primary/20 flex items-center justify-center animate-[spin_10s_linear_infinite]">
+                    <div class="w-16 h-16 rounded-full border border-secondary/30 flex items-center justify-center animate-[spin_5s_linear_infinite_reverse]">
+                        <div class="w-4 h-4 rounded-full bg-primary shadow-[0_0_15px_rgba(124,58,237,0.5)]"></div>
+                    </div>
+                </div>
+                <p class="font-label-md text-label-md text-text-secondary tracking-widest uppercase">Topology Canvas</p>
+            </div>
+
+            <!-- Loaded graph placeholder -->
+            <div id="graph-loaded-state" style="display:none" class="absolute inset-0 flex items-center justify-center fade-in-up">
+                <p class="font-label-md text-label-md text-text-secondary tracking-widest uppercase">Topology Canvas</p>
+            </div>
+        </div>
+
+        <div id="graph-legend" class="h-12 bg-surface border-t border-border flex items-center px-lg gap-lg font-label-sm text-label-sm" style="display:none">
+            <div class="flex items-center gap-xs">
+                <span class="w-2.5 h-2.5 rounded-full bg-danger shadow-[0_0_5px_rgba(239,68,68,0.5)]"></span>
+                <span class="text-text-secondary">High Risk</span>
+            </div>
+            <div class="flex items-center gap-xs">
+                <span class="w-2.5 h-2.5 rounded-full bg-warning shadow-[0_0_5px_rgba(245,158,11,0.5)]"></span>
+                <span class="text-text-secondary">Medium</span>
+            </div>
+            <div class="flex items-center gap-xs">
+                <span class="w-2.5 h-2.5 rounded-full bg-success shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
+                <span class="text-text-secondary">Safe</span>
+            </div>
+            <div class="flex items-center gap-xs ml-auto">
+                <span class="w-2.5 h-2.5 rounded-full bg-secondary shadow-[0_0_5px_rgba(173,198,255,0.5)]"></span>
+                <span class="text-text-secondary">Entry Point</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Right Panel: Onboarding Quest -->
+    <aside class="flex-1 min-w-[320px] bg-surface flex flex-col">
+        <div class="p-md border-b border-border bg-surface-container-low flex items-center justify-between">
+            <div>
+                <h3 class="font-headline-md text-headline-md font-bold text-text-primary" id="quest-role-title">Onboarding Quest</h3>
+                <p class="font-label-sm text-label-sm text-text-secondary mt-0.5" id="quest-subtitle">Load a repo to generate your path</p>
+            </div>
+            <select id="role-selector" onchange="onRoleChange()" class="bg-surface-container-highest border border-border text-text-secondary font-label-sm text-label-sm rounded px-2 py-1 focus:ring-0 focus:border-primary cursor-pointer">
+                <option value="backend">Backend Dev</option>
+                <option value="frontend">Frontend Dev</option>
+                <option value="devops">DevOps</option>
+                <option value="fullstack">Full-stack</option>
+            </select>
+        </div>
+        <!-- progress bar (hidden until loaded) -->
+        <div id="quest-progress-bar" class="px-md pt-md pb-sm border-b border-border" style="display:none">
+            <div class="flex items-center justify-between mb-xs">
+                <span class="font-label-sm text-label-sm text-text-secondary">Progress</span>
+                <span class="font-label-sm text-label-sm text-primary font-bold" id="quest-progress-text">0 of 0</span>
+            </div>
+            <div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-primary-container to-secondary transition-all duration-500 shadow-[0_0_8px_rgba(124,58,237,0.5)]" id="quest-progress-fill" style="width:0%"></div>
+            </div>
+        </div>
+        <div class="flex-1 overflow-y-auto p-md space-y-sm no-scrollbar">
+            <!-- Empty state -->
+            <div id="quest-empty" class="flex flex-col items-center justify-center h-full gap-md text-center px-md">
+                <span class="material-symbols-outlined text-[40px] text-text-secondary/30">checklist</span>
+                <p class="font-label-sm text-label-sm text-text-secondary/50">Your personalized onboarding<br/>path will appear here after<br/>the repo is analysed</p>
+            </div>
+            <!-- Loading skeleton -->
+            <div id="quest-loading" style="display:none" class="flex flex-col gap-3 pt-sm">
+                <div class="bg-surface-container-low border border-border rounded-lg p-sm flex items-start gap-md">
+                    <div class="skeleton w-5 h-5 rounded-full shrink-0 mt-0.5"></div>
+                    <div class="flex-1 flex flex-col gap-2">
+                        <div class="skeleton h-3 w-1/2"></div>
+                        <div class="skeleton h-2 w-3/4"></div>
+                        <div class="skeleton h-2 w-2/3"></div>
+                    </div>
+                </div>
+                <div class="bg-surface-container-low border border-border rounded-lg p-sm flex items-start gap-md opacity-70">
+                    <div class="skeleton w-5 h-5 rounded shrink-0 mt-0.5"></div>
+                    <div class="flex-1 flex flex-col gap-2">
+                        <div class="skeleton h-3 w-2/5"></div>
+                        <div class="skeleton h-2 w-3/5"></div>
+                    </div>
+                </div>
+                <div class="bg-surface-container-low border border-border rounded-lg p-sm flex items-start gap-md opacity-40">
+                    <div class="skeleton w-5 h-5 rounded shrink-0 mt-0.5"></div>
+                    <div class="flex-1 flex flex-col gap-2">
+                        <div class="skeleton h-3 w-1/3"></div>
+                        <div class="skeleton h-2 w-1/2"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Actual steps -->
+            <div id="quest-steps-content" style="display:none" class="fade-in-up"></div>
+        </div>
+    </aside>
 </main>
+
+<!-- FLOATING AI CHAT BUTTON -->
+<button id="chat-fab" onclick="toggleChat()"
+    class="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary-container shadow-[0_0_20px_rgba(124,58,237,0.4)] flex items-center justify-center hover:brightness-110 transition-all active:scale-95">
+    <span class="material-symbols-outlined text-on-primary-container text-[26px]" id="chat-fab-icon" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</button>
+
+<!-- FLOATING AI CHAT PANEL -->
+<div id="chat-panel" class="hidden-panel fixed bottom-24 right-6 z-50 w-[380px] max-h-[520px] bg-surface border border-border rounded-xl shadow-[0_8px_40px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden">
+    <div class="flex items-center gap-sm p-md border-b border-border bg-surface-container-low">
+        <div class="w-8 h-8 rounded bg-surface-container-highest border border-border flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+        </div>
+        <div class="flex-1">
+            <p class="font-label-md text-label-md font-bold text-text-primary">DevLens AI</p>
+            <p class="font-label-sm text-label-sm text-success flex items-center gap-xs"><span class="w-1.5 h-1.5 rounded-full bg-success inline-block"></span>Online</p>
+        </div>
+        <button onclick="toggleChat()" class="text-text-secondary hover:text-text-primary transition-colors">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-md space-y-md no-scrollbar min-h-[200px]" id="chat-messages">
+        <div class="flex gap-sm">
+            <div class="w-7 h-7 rounded bg-surface-container-highest border border-border flex items-center justify-center shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[14px] text-primary">smart_toy</span>
+            </div>
+            <div class="bg-surface-container-low border border-border rounded-lg rounded-tl-none p-sm font-body-sm text-body-sm text-text-primary max-w-[280px]">
+                Hi! Load a GitHub repo and I'll help you understand the codebase. Ask me anything like <span class="text-primary">"where does auth happen?"</span>
+            </div>
+        </div>
+    </div>
+    <div class="p-sm border-t border-border bg-surface">
+        <div class="relative flex items-end w-full bg-background border border-border rounded-lg focus-within:border-primary focus-within:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] transition-all p-1">
+            <textarea id="chat-input" class="w-full bg-transparent border-none text-text-primary font-body-sm text-body-sm py-2 px-2 focus:ring-0 placeholder:text-text-secondary resize-none max-h-24 min-h-[36px] no-scrollbar" placeholder="Ask about the codebase..." rows="1"
+                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+            <button onclick="sendChat()" class="p-1.5 text-text-secondary hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[20px]">send</span>
+            </button>
+        </div>
+        <div class="flex gap-xs mt-xs px-1">
+            <span onclick="quickPrompt('Where does authentication happen?')" class="px-2 py-0.5 rounded bg-surface-container-highest text-text-secondary font-label-sm text-[10px] cursor-pointer hover:text-text-primary">/auth</span>
+            <span onclick="quickPrompt('What breaks if I delete this file?')" class="px-2 py-0.5 rounded bg-surface-container-highest text-text-secondary font-label-sm text-[10px] cursor-pointer hover:text-text-primary">/blast-radius</span>
+            <span onclick="quickPrompt('Explain the main entry point')" class="px-2 py-0.5 rounded bg-surface-container-highest text-text-secondary font-label-sm text-[10px] cursor-pointer hover:text-text-primary">/explain</span>
+        </div>
+    </div>
+</div>
+
+<script>
+let chatOpen = false;
+let repoLoaded = false;
+let currentRole = 'backend';
+let questSteps = [];
+let allFileNodes = [];
+let lastFileTree = [];
+
+// ─── Chat ───────────────────────────────────────────────────────────────────
+function toggleChat() {
+    chatOpen = !chatOpen;
+    const panel = document.getElementById('chat-panel');
+    const icon = document.getElementById('chat-fab-icon');
+    if (chatOpen) {
+        panel.classList.remove('hidden-panel');
+        panel.classList.add('visible-panel');
+        icon.textContent = 'close';
+        setTimeout(() => document.getElementById('chat-input').focus(), 150);
+    } else {
+        panel.classList.remove('visible-panel');
+        panel.classList.add('hidden-panel');
+        icon.textContent = 'smart_toy';
+    }
+}
+
+function sendChat() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    appendUserMsg(text);
+    input.value = '';
+    simulateAIReply(text);
+}
+
+function quickPrompt(text) {
+    document.getElementById('chat-input').value = text;
+    document.getElementById('chat-input').focus();
+}
+
+function appendUserMsg(text) {
+    const container = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'flex justify-end gap-sm';
+    div.innerHTML = `<div class="bg-primary-container text-on-primary-container rounded-lg rounded-tr-none p-sm font-body-sm text-body-sm max-w-[280px] shadow-[0_0_10px_rgba(124,58,237,0.1)]">${escapeHtml(text)}</div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function appendAIMsg(html) {
+    const container = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'flex gap-sm';
+    div.innerHTML = `
+        <div class="w-7 h-7 rounded bg-surface-container-highest border border-border flex items-center justify-center shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-[14px] text-primary">smart_toy</span>
+        </div>
+        <div class="bg-surface-container-low border border-border rounded-lg rounded-tl-none p-sm font-body-sm text-body-sm text-text-primary max-w-[280px]">${html}</div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function simulateAIReply(userMsg) {
+    const container = document.getElementById('chat-messages');
+    const typing = document.createElement('div');
+    typing.id = 'typing-indicator';
+    typing.className = 'flex gap-sm';
+    typing.innerHTML = `
+        <div class="w-7 h-7 rounded bg-surface-container-highest border border-border flex items-center justify-center shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-[14px] text-primary">smart_toy</span>
+        </div>
+        <div class="bg-surface-container-low border border-border rounded-lg rounded-tl-none px-sm py-2 flex items-center gap-xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-text-secondary animate-bounce" style="animation-delay:0ms"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-text-secondary animate-bounce" style="animation-delay:150ms"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-text-secondary animate-bounce" style="animation-delay:300ms"></span>
+        </div>`;
+    container.appendChild(typing);
+    container.scrollTop = container.scrollHeight;
+    setTimeout(() => {
+        typing.remove();
+        if (!repoLoaded) {
+            appendAIMsg('Please load a GitHub repo first so I can answer questions about the codebase.');
+            return;
+        }
+        const lower = userMsg.toLowerCase();
+        if (lower.includes('auth')) {
+            appendAIMsg('Authentication is handled in <code class="font-label-sm text-secondary bg-background px-1 rounded">security.py</code>. It uses JWT tokens validated on every protected route via the <code class="font-label-sm text-secondary bg-background px-1 rounded">get_current_user</code> dependency.');
+        } else if (lower.includes('break') || lower.includes('delete') || lower.includes('blast')) {
+            appendAIMsg('🔴 <strong>Blast Radius:</strong> Deleting <code class="font-label-sm text-secondary bg-background px-1 rounded">applications.py</code> would break <strong>routing.py</strong>, <strong>security.py</strong>, and <strong>__init__.py</strong> — 3 direct dependents.');
+        } else if (lower.includes('entry') || lower.includes('main') || lower.includes('start')) {
+            appendAIMsg('The main entry point is <code class="font-label-sm text-secondary bg-background px-1 rounded">applications.py</code> — it boots the FastAPI app, registers all routers, and sets up middleware.');
+        } else {
+            appendAIMsg('Try asking about <span class="text-primary">auth</span>, <span class="text-primary">entry points</span>, or <span class="text-primary">blast radius</span> for specific files.');
+        }
+    }, 1200);
+}
+
+function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─── Repo Loading ────────────────────────────────────────────────────────────
+async function loadRepo(repoUrl) {
+    const slug = repoUrl.replace('https://github.com/', '').replace(/\/$/, '');
+    const [owner, repo] = slug.split('/');
+    if (!owner || !repo) return;
+
+    // Show skeletons
+    document.getElementById('explorer-empty').style.display = 'none';
+    document.getElementById('explorer-loading').style.display = 'flex';
+    document.getElementById('explorer-loading').style.flexDirection = 'column';
+    document.getElementById('quest-empty').style.display = 'none';
+    document.getElementById('quest-loading').style.display = 'flex';
+    document.getElementById('quest-loading').style.flexDirection = 'column';
+
+    // Show repo badge
+    document.getElementById('repo-badge').style.display = 'flex';
+    document.getElementById('repo-name-badge').textContent = slug;
+
+    // Switch canvas
+    document.getElementById('repo-input-state').style.display = 'none';
+    document.getElementById('graph-loaded-state').style.display = 'flex';
+    document.getElementById('graph-toolbar').style.display = 'flex';
+    document.getElementById('graph-legend').style.display = 'flex';
+
+    // 1. Fetch real file tree from GitHub API
+    let fileTree = [];
+    try {
+        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees/HEAD?recursive=1`);
+        const data = await res.json();
+        if (data.tree) {
+            fileTree = buildTreeFromPaths(data.tree);
+        }
+    } catch (e) {
+        console.error('GitHub fetch error', e);
+    }
+
+    repoLoaded = true;
+    renderFileTree(fileTree);
+
+    // 2. Generate onboarding quest via Anthropic API
+    await generateOnboardingQuest(currentRole, slug, fileTree);
+}
+
+// Convert flat GitHub tree paths into nested folder/file structure
+function buildTreeFromPaths(gitTree) {
+    const root = [];
+    const map = {};
+
+    // Only include blobs (files), skip overly deep paths, limit to 200 entries
+    const files = gitTree
+        .filter(n => n.type === 'blob')
+        .slice(0, 200);
+
+    files.forEach(node => {
+        const parts = node.path.split('/');
+        let current = root;
+        parts.forEach((part, i) => {
+            const isFile = i === parts.length - 1;
+            const key = parts.slice(0, i + 1).join('/');
+            if (isFile) {
+                current.push({ name: part, path: node.path, risk: null });
+            } else {
+                if (!map[key]) {
+                    const folder = { name: part, type: 'folder', children: [] };
+                    map[key] = folder;
+                    current.push(folder);
+                }
+                current = map[key].children;
+            }
+        });
+    });
+
+    return root;
+}
+
+// Flatten tree to get a simple list of file paths for the AI prompt
+function flattenTree(nodes, result = []) {
+    nodes.forEach(n => {
+        if (n.type === 'folder') flattenTree(n.children, result);
+        else result.push(n.path || n.name);
+    });
+    return result;
+}
+
+// ─── File Tree ───────────────────────────────────────────────────────────────
+const riskColor = { high: 'bg-danger', medium: 'bg-warning', low: 'bg-success' };
+
+function renderFileTree(nodes, parentEl, depth) {
+    depth = depth || 0;
+    const root = parentEl || document.getElementById('file-tree-content');
+    if (!parentEl) {
+        root.innerHTML = '';
+        allFileNodes = [];
+        lastFileTree = nodes;
+        document.getElementById('explorer-loading').style.display = 'none';
+        document.getElementById('file-search-wrap').style.display = 'block';
+        root.style.display = 'block';
+    }
+    nodes.forEach(node => {
+        if (node.type === 'folder') {
+            const wrap = document.createElement('div');
+            wrap.className = depth > 0 ? 'ml-lg border-l border-border/50 pl-xs flex flex-col gap-0.5 mt-1' : '';
+            const header = document.createElement('div');
+            header.className = 'flex items-center gap-xs py-1 px-xs hover:bg-surface-container-high rounded cursor-pointer group file-item';
+            header.innerHTML = `
+                <span class="material-symbols-outlined text-[16px] text-text-secondary transition-transform group-hover:text-primary folder-arrow">expand_more</span>
+                <span class="material-symbols-outlined text-[16px] text-secondary">folder</span>
+                <span class="text-text-primary">${node.name}</span>`;
+            const children = document.createElement('div');
+            children.className = 'ml-lg border-l border-border/50 pl-xs flex flex-col gap-0.5';
+            header.onclick = () => {
+                const arrow = header.querySelector('.folder-arrow');
+                const isCollapsed = children.style.display === 'none';
+                children.style.display = isCollapsed ? 'flex' : 'none';
+                children.style.flexDirection = 'column';
+                arrow.style.transform = isCollapsed ? '' : 'rotate(-90deg)';
+            };
+            wrap.appendChild(header);
+            renderFileTree(node.children, children, depth + 1);
+            wrap.appendChild(children);
+            root.appendChild(wrap);
+        } else {
+            const item = document.createElement('div');
+            item.className = 'flex items-center justify-between py-1 px-xs hover:bg-surface-container-high rounded cursor-pointer file-item';
+            item.dataset.filename = node.name.toLowerCase();
+            const dot = node.risk ? `<span class="w-2 h-2 rounded-full ${riskColor[node.risk]} ${node.risk==='high'?'animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]':''}"></span>` : '';
+            item.innerHTML = `
+                <div class="flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[16px] text-text-secondary">description</span>
+                    <span class="text-text-secondary hover:text-text-primary transition-colors">${node.name}</span>
+                </div>${dot}`;
+            root.appendChild(item);
+            allFileNodes.push(item);
+        }
+    });
+}
+
+function filterFiles(query) {
+    const q = query.toLowerCase();
+    allFileNodes.forEach(el => {
+        el.style.display = (!q || el.dataset.filename.includes(q)) ? '' : 'none';
+    });
+}
+
+// ─── Onboarding Quest (AI-powered) ───────────────────────────────────────────
+const roleLabels = {
+    backend: 'Backend Dev Path',
+    frontend: 'Frontend Dev Path',
+    devops: 'DevOps Path',
+    fullstack: 'Full-stack Path'
+};
+
+async function generateOnboardingQuest(role, repoSlug, fileTree) {
+    document.getElementById('quest-role-title').textContent = roleLabels[role] || 'Onboarding Path';
+    document.getElementById('quest-subtitle').textContent = repoSlug;
+    document.getElementById('quest-empty').style.display = 'none';
+    document.getElementById('quest-loading').style.display = 'flex';
+    document.getElementById('quest-loading').style.flexDirection = 'column';
+    document.getElementById('quest-steps-content').style.display = 'none';
+    document.getElementById('quest-progress-bar').style.display = 'none';
+
+    const filePaths = flattenTree(fileTree).slice(0, 120).join('\n');
+
+    const prompt = `You are a senior engineer onboarding a new ${role} developer to the GitHub repo: ${repoSlug}.
+
+Here are the files in this repo:
+${filePaths}
+
+Generate a prioritized onboarding quest: an ordered list of 4-6 key files this developer should read first, based on their role and the actual files present.
+
+For each step output JSON with these exact fields:
+- file: the filename (just the basename, e.g. "main.py")
+- title: short label (2-4 words)
+- desc: one sentence explaining why this file matters for their role
+- time: estimated reading time like "5 min" or "10 min"
+- risk: one of "high", "medium", or "low" (how critical/risky is this file)
+
+Respond ONLY with a JSON array. No markdown, no explanation, no backticks. Example:
+[{"file":"main.py","title":"Entry Point","desc":"App starts here.","time":"5 min","risk":"high"}]`;
+
+    try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1000,
+                messages: [{ role: 'user', content: prompt }]
+            })
+        });
+        const data = await res.json();
+        const text = data.content?.map(b => b.text || '').join('') || '[]';
+        const clean = text.replace(/```json|```/g, '').trim();
+        const steps = JSON.parse(clean);
+        questSteps = steps.map((s, i) => ({ ...s, done: false, index: i }));
+    } catch (e) {
+        console.error('AI quest error', e);
+        questSteps = [];
+    }
+
+    document.getElementById('quest-loading').style.display = 'none';
+    document.getElementById('quest-progress-bar').style.display = 'block';
+    renderQuestSteps();
+}
+
+function renderQuestSteps() {
+    const container = document.getElementById('quest-steps-content');
+    container.style.display = 'block';
+    container.innerHTML = '';
+    const total = questSteps.length;
+    const done = questSteps.filter(s => s.done).length;
+    document.getElementById('quest-progress-text').textContent = `${done} of ${total}`;
+    document.getElementById('quest-progress-fill').style.width = `${(done / total) * 100}%`;
+
+    questSteps.forEach((step, i) => {
+        const isNext = !step.done && (i === 0 || questSteps[i - 1].done);
+        const el = document.createElement('div');
+        if (step.done) {
+            el.className = 'bg-surface-container-low border border-border rounded-lg p-sm flex items-start gap-md opacity-60';
+            el.innerHTML = `
+                <div class="w-5 h-5 rounded-full bg-success text-background flex items-center justify-center shrink-0 mt-0.5">
+                    <span class="material-symbols-outlined text-[14px] font-bold">check</span>
+                </div>
+                <div>
+                    <h4 class="font-label-md text-label-md font-bold text-text-primary line-through">${step.title}</h4>
+                    <p class="font-body-sm text-body-sm text-text-secondary mt-0.5">${step.file} · ${step.time}</p>
+                </div>`;
+        } else if (isNext) {
+            el.className = 'bg-background border border-primary/50 rounded-lg p-sm flex items-start gap-md relative overflow-hidden step-active';
+            el.innerHTML = `
+                <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                <div class="w-5 h-5 rounded border-2 border-primary shrink-0 mt-0.5 cursor-pointer hover:bg-primary/20 transition-colors" onclick="markDone(${i})"></div>
+                <div class="flex-1">
+                    <h4 class="font-label-md text-label-md font-bold text-primary">${step.title}</h4>
+                    <p class="font-body-sm text-body-sm text-text-secondary mt-1">${step.desc}</p>
+                    <div class="flex items-center justify-between mt-md">
+                        <span class="font-label-sm text-label-sm text-text-secondary flex items-center gap-xs">
+                            <span class="material-symbols-outlined text-[14px]">schedule</span>${step.time}
+                        </span>
+                        <button onclick="markDone(${i})" class="px-3 py-1.5 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm hover:brightness-110 transition-all shadow-sm">
+                            Mark Done
+                        </button>
+                    </div>
+                </div>`;
+        } else {
+            el.className = 'bg-surface-container-lowest border border-border rounded-lg p-sm flex items-start gap-md opacity-50';
+            el.innerHTML = `
+                <div class="w-5 h-5 rounded border-2 border-border shrink-0 mt-0.5 flex items-center justify-center bg-surface">
+                    <span class="material-symbols-outlined text-[12px] text-text-secondary">lock</span>
+                </div>
+                <div>
+                    <h4 class="font-label-md text-label-md font-bold text-text-secondary">${step.title}</h4>
+                    <p class="font-body-sm text-body-sm text-text-secondary mt-0.5">${step.file} · ${step.time}</p>
+                </div>`;
+        }
+        container.appendChild(el);
+    });
+}
+
+function markDone(index) {
+    questSteps[index].done = true;
+    renderQuestSteps();
+}
+
+function onRoleChange() {
+    currentRole = document.getElementById('role-selector').value;
+    if (repoLoaded) {
+        generateOnboardingQuest(currentRole, document.getElementById('repo-name-badge').textContent, lastFileTree);
+    }
+}
+
+function handleLogout() {
+    if (confirm('Log out of DevLens?')) {
+        alert('Logged out. Redirect to login page.');
+    }
+}
+</script>
 </body></html>
