@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevLens - Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#131318","surface-dim":"#131318","on-tertiary":"#4f2500","on-secondary-fixed-variant":"#004395","tertiary-fixed-dim":"#ffb784","tertiary-container":"#a15100",warning:"#f59e0b","text-secondary":"#8b93a1","inverse-on-surface":"#303036","inverse-primary":"#732ee4","on-primary-container":"#ede0ff","on-surface":"#e4e1e9","surface-container-low":"#1b1b20","tertiary-fixed":"#ffdcc6","secondary-fixed":"#d8e2ff",primary:"#d2bbff",border:"#1e1e2e","primary-fixed-dim":"#d2bbff","error-container":"#93000a",success:"#10b981","primary-fixed":"#eaddff","secondary-fixed-dim":"#adc6ff","surface-container-lowest":"#0e0e13","surface-container-high":"#2a292f","on-primary-fixed":"#25005a",danger:"#ef4444","surface-tint":"#d2bbff",secondary:"#adc6ff",tertiary:"#ffb784",surface:"#13131a",outline:"#958da1","text-primary":"#ffffff","surface-container":"#1f1f25","on-secondary-fixed":"#001a42","surface-container-highest":"#35343a","on-background":"#e4e1e9","on-secondary":"#002e6a","on-error-container":"#ffdad6","on-tertiary-fixed-variant":"#713700","secondary-container":"#0566d9","on-surface-variant":"#ccc3d8","inverse-surface":"#e4e1e9","primary-container":"#7c3aed","on-tertiary-container":"#ffe0cd","on-tertiary-fixed":"#301400",error:"#ffb4ab","on-secondary-container":"#e6ecff","outline-variant":"#4a4455","surface-bright":"#39383e","on-primary":"#3f008e","surface-variant":"#35343a","on-error":"#690005","on-primary-fixed-variant":"#5a00c6"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"container-max":"1440px","2xl":"48px",base:"4px",sm:"8px",md:"16px",gutter:"24px",xl:"32px",lg:"24px",xs:"4px"},fontFamily:{"headline-md":["Inter"],"label-sm":["JetBrains Mono"],"body-lg":["Inter"],"headline-xl":["Inter"],"body-sm":["Inter"],"headline-lg":["Inter"],"body-md":["Inter"],"label-md":["JetBrains Mono"]},fontSize:{"headline-md":["24px",{lineHeight:"32px",fontWeight:"600"}],"label-sm":["12px",{lineHeight:"16px",fontWeight:"500"}],"body-lg":["18px",{lineHeight:"28px",fontWeight:"400"}],"headline-xl":["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"700"}],"body-sm":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.01em",fontWeight:"600"}],"body-md":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-md":["14px",{lineHeight:"20px",fontWeight:"500"}]}}}}
+</script>
+<style>
+body{background-color:#0a0a0f;}
+.ambient-glow:hover{box-shadow:0 0 20px 0 rgba(124,58,237,0.15);}
+.btn-primary{background:linear-gradient(135deg,#7c3aed 0%,#3b82f6 100%);transition:all 0.3s ease;}
+.btn-primary:hover{box-shadow:0 0 20px rgba(124,58,237,0.4);}
+</style>
+</head>
+<body class="text-on-surface font-body-md text-body-md min-h-screen flex flex-col">
+
+<!-- Nav — matching landing page style -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
+  <nav class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto">
+    <!-- Left: Logo -->
+    <div class="flex items-center gap-sm">
+      <span class="material-symbols-outlined text-primary text-[32px]" style="font-variation-settings:'FILL' 1">visibility</span>
+      <span class="font-headline-md text-headline-md font-bold text-on-surface">DevLens</span>
+    </div>
+    <!-- Center: Nav Links -->
+    <div class="hidden md:flex items-center gap-xl">
+      <a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Repositories</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Analytics</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Settings</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Pricing</a>
+    </div>
+    <!-- Right: Sign In + Get Started (matching landing page) -->
+    <div class="flex items-center gap-md">
+        <button 
+        id="logoutBtn"
+        class="bg-gradient-to-r from-red-500 to-red-700 text-white font-label-md text-label-md px-lg py-sm rounded-lg hover:shadow-[0_0_20px_rgba(239,68,68,0.45)] hover:scale-[1.02] active:scale-95 transition-all duration-300">
+        Log Out
+        </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow pt-2xl px-gutter max-w-container-max mx-auto w-full flex flex-col gap-2xl pb-2xl">
+  <!-- Hero Section -->
+  <section class="flex flex-col items-center justify-center pt-2xl mt-xl text-center max-w-3xl mx-auto w-full">
+    <h1 class="font-headline-xl text-headline-xl text-text-primary mb-md">Understand Any Codebase in 60 Seconds</h1>
+    <p class="font-body-lg text-body-lg text-text-secondary mb-xl">Deep architectural analysis, vulnerability scanning, and code quality metrics powered by next-gen AI.</p>
+    <div class="w-full relative flex items-center bg-surface border border-border rounded-full p-xs focus-within:border-primary-container focus-within:ring-2 focus-within:ring-primary-container/20 transition-all mb-lg shadow-lg">
+      <span class="material-symbols-outlined text-text-secondary ml-md mr-sm">link</span>
+      <input class="bg-transparent border-none w-full text-body-md font-body-md text-text-primary focus:outline-none focus:ring-0 placeholder:text-text-secondary" placeholder="https://github.com/owner/repo" type="text"/>
+      <button class="bg-gradient-to-r from-primary-container to-secondary-container text-white px-lg py-sm rounded-full font-label-md text-label-md flex items-center gap-xs hover:shadow-[0_0_15px_rgba(124,58,237,0.4)] transition-shadow">
+        Analyze
+        <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
+      </button>
+    </div>
+    <div class="flex flex-wrap justify-center gap-sm">
+      <button class="px-md py-xs rounded-full border border-border bg-surface-container-low text-text-secondary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">Frontend Developer</button>
+      <button class="px-md py-xs rounded-full border border-primary-container bg-primary-container/10 text-primary font-label-sm text-label-sm">Full Stack</button>
+      <button class="px-md py-xs rounded-full border border-border bg-surface-container-low text-text-secondary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">Backend Developer</button>
+      <button class="px-md py-xs rounded-full border border-border bg-surface-container-low text-text-secondary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">DevOps Engineer</button>
+    </div>
+  </section>
+
+  <!-- Recent Analyses -->
+  <section class="w-full mt-lg">
+    <div class="flex items-center justify-between mb-lg">
+      <h2 class="font-headline-lg text-headline-lg text-text-primary">Recent Analyses</h2>
+      <button class="text-text-secondary hover:text-text-primary font-label-md text-label-md flex items-center gap-xs transition-colors">
+        View All <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+      </button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+      <div class="bg-surface border border-border rounded-lg p-md flex flex-col ambient-glow transition-all">
+        <div class="flex justify-between items-start mb-md">
+          <div>
+            <h3 class="font-headline-md text-headline-md text-text-primary text-[18px] leading-tight">nextjs-commerce</h3>
+            <p class="font-body-sm text-body-sm text-text-secondary mt-xs">vercel/nextjs-commerce</p>
+          </div>
+          <span class="bg-success/10 text-success font-label-sm text-label-sm px-sm py-xs rounded-DEFAULT border border-success/20">98 A+</span>
+        </div>
+        <div class="flex items-center gap-md mb-lg">
+          <div class="flex items-center text-text-secondary font-label-sm text-label-sm gap-xs">
+            <span class="material-symbols-outlined" style="font-size:16px;">description</span>1,245 files
+          </div>
+          <div class="flex items-center text-text-secondary font-label-sm text-label-sm gap-xs">
+            <span class="material-symbols-outlined" style="font-size:16px;">calendar_today</span>2 hrs ago
+          </div>
+        </div>
+        <button class="mt-auto pt-md border-t border-border flex items-center justify-between text-text-secondary hover:text-primary transition-colors font-label-md text-label-md w-full text-left">
+          View Dashboard
+          <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="../js/home.js"></script>
+</body>
+</html>
