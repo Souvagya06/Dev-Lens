@@ -17,6 +17,11 @@ async function cloneRepo(repoUrl, repoName) {
   await git.clone(repoUrl, repoPath);
   console.log(`✅ Cloned successfully: ${repoName}`);
 
+  const clonedFiles = getAllFiles(repoPath);
+  if (clonedFiles.length === 0) {
+    throw new Error(`Clone completed, but no analyzable files were found in ${repoName}`);
+  }
+
   return repoPath;
 }
 
