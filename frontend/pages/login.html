@@ -189,7 +189,7 @@
 </label>
 <input class="input-dark rounded-md px-md py-sm font-body-sm text-body-sm w-full" id="login-password" placeholder="••••••••" type="password"/>
 </div>
-<button class="btn-gradient font-label-md text-label-md rounded-md py-sm w-full mt-sm" type="button">Login</button>
+<button class="btn-gradient font-label-md text-label-md rounded-md py-sm w-full mt-sm" type="button" onclick="handleLogin()">Login</button>
 </form>
 </div>
 <!-- Signup Form -->
@@ -207,7 +207,7 @@
 <label class="font-label-sm text-label-sm text-text-secondary" for="signup-password">Password</label>
 <input class="input-dark rounded-md px-md py-sm font-body-sm text-body-sm w-full" id="signup-password" placeholder="••••••••" type="password"/>
 </div>
-<button class="btn-gradient font-label-md text-label-md rounded-md py-sm w-full mt-sm" type="button">Create Account</button>
+<button class="btn-gradient font-label-md text-label-md rounded-md py-sm w-full mt-sm" type="button" onclick="handleSignup()">Create Account</button>
 </form>
 </div>
 <!-- OAuth Divider -->
@@ -243,6 +243,9 @@
             
             event.currentTarget.classList.remove('text-text-secondary', 'border-transparent');
             event.currentTarget.classList.add('text-primary', 'border-primary');
-        }
+        } 
     </script>
+    <script src="/js/auth.js"></script>
+    <script>redirectIfLoggedIn();</script>
+
 </body></html>
