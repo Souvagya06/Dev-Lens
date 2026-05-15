@@ -6,16 +6,27 @@ const path = require("path");
 async function cloneRepo(repoUrl, repoName) {
   const repoPath = path.join(__dirname, "../repos", repoName);
 
-  // If already cloned, skip
   if (fs.existsSync(repoPath)) {
-    console.log(`✅ Repo already exists: ${repoName}`);
-    return repoPath;
+    const existingFiles = getAllFiles(repoPath);
+
+    if (existingFiles.length > 0) {
+      console.log(`✅ Repo already exists: ${repoName}`);
+      return repoPath;
+    }
+
+    console.warn(`⚠️ Repo folder exists but has no analyzable files. Re-cloning: ${repoName}`);
+    fs.rmSync(repoPath, { recursive: true, force: true });
   }
 
   console.log(`📥 Cloning repo: ${repoUrl}`);
   const git = simpleGit();
   await git.clone(repoUrl, repoPath);
   console.log(`✅ Cloned successfully: ${repoName}`);
+
+  const clonedFiles = getAllFiles(repoPath);
+  if (clonedFiles.length === 0) {
+    throw new Error(`Clone completed, but no analyzable files were found in ${repoName}`);
+  }
 
   return repoPath;
 }

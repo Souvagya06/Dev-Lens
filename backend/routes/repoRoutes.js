@@ -2,11 +2,53 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const { cloneRepo, getAllFiles } = require("../utils/repoParser");
+const { buildDependencyGraph } = require("../utils/dependencyGraph");
 const { analyzeCode } = require("../agents/repoAgent");
 const client = require("../db/tursoClient");
 const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
+
+// ── 0. DEPENDENCY GRAPH ──────────────────────────────────
+// POST /api/repo/graph
+router.post("/graph", authMiddleware, async (req, res) => {
+  try {
+    const repoUrl = req.body.repoUrl;
+
+    if (!repoUrl || !repoUrl.includes("github.com")) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid GitHub URL required"
+      });
+    }
+
+    const repoName = repoUrl
+      .replace("https://github.com/", "")
+      .replace(".git", "")
+      .replace(/\//g, "-");
+
+    console.log(`\n🧭 Building dependency graph: ${repoName}`);
+
+    const repoPath = await cloneRepo(repoUrl, repoName);
+    const graph = buildDependencyGraph(repoPath);
+
+    console.log(`✅ Dependency graph ready: ${graph.nodes.length} nodes, ${graph.links.length} links`);
+
+    res.json({
+      success: true,
+      repo: repoName,
+      nodes: graph.nodes,
+      links: graph.links
+    });
+  } catch (error) {
+    console.error("❌ Graph error:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to build dependency graph",
+      error: error.message
+    });
+  }
+});
 
 // ── 1. ANALYZE REPO ──────────────────────────────────────
 // POST /api/repo/analyze

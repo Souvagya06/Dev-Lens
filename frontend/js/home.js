@@ -48,6 +48,7 @@ async function analyzeRepo() {
 
     if (data.success) {
       localStorage.setItem("devlens_analysisId", data.analysisId);
+      localStorage.setItem("devlens_repoUrl", repoUrl);
       localStorage.setItem("devlens_repoName", data.repo);
       showPopup("Analysis complete! Loading dashboard...", "success");
       setTimeout(() => {
