@@ -23,7 +23,7 @@
     }
 </script>
 <style>
-    body { overflow: hidden; }
+    body { overflow: hidden; background-color: #0a0a0f; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     #chat-panel { transition: opacity 0.2s ease, transform 0.2s ease; }
@@ -74,23 +74,23 @@
 
 <!-- Nav — exactly matching landing page -->
 <header class="fixed top-0 w-full z-50 bg-background/90 backdrop-blur-xl">
-  <nav class="flex justify-between items-center px-lg h-[52px] max-w-container-max mx-auto">
+  <nav class="flex justify-between items-center px-lg h-[60px] max-w-container-max mx-auto">
     <!-- Left: Logo -->
     <div class="flex items-center gap-sm">
-      <span class="material-symbols-outlined text-primary text-[28px]" style="font-variation-settings:'FILL' 1">visibility</span>
-      <span class="font-headline-md text-[20px] font-bold text-on-surface tracking-tight">DevLens</span>
+      <span class="material-symbols-outlined text-primary text-[32px]" style="font-variation-settings:'FILL' 1">visibility</span>
+      <span class="font-headline-md text-[24px] font-bold text-on-surface tracking-tight">DevLens</span>
     </div>
     <!-- Center: Nav Links -->
     <div class="hidden md:flex items-center gap-[36px]">
-      <a class="nav-active font-body-md text-body-md" href="#">Repositories</a>
-      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Analytics</a>
-      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Settings</a>
-      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Pricing</a>
+      <a class="nav-active font-body-md text-[18px]" href="#">Repositories</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-[18px]" href="#">Analytics</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-[18px]" href="#">Settings</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-[18px]" href="#">Pricing</a>
     </div>
     <!-- Right: Log Out -->
     <div class="flex items-center">
       <button
-        class="bg-gradient-to-r from-red-500 to-red-700 text-white font-label-md text-label-md px-lg py-[7px] rounded-lg hover:shadow-[0_0_20px_rgba(239,68,68,0.45)] hover:scale-[1.02] active:scale-95 transition-all duration-300">
+        class="bg-gradient-to-r from-red-500 to-red-700 text-white font-label-md text-[16px] px-lg py-[8px] rounded-lg hover:shadow-[0_0_20px_rgba(239,68,68,0.45)] hover:scale-[1.02] active:scale-95 transition-all duration-300">
         Log Out
       </button>
     </div>
@@ -98,7 +98,7 @@
 </header>
 
 <!-- Main Dashboard Layout -->
-<main class="flex-1 flex mt-[52px] h-[calc(100vh-52px)] overflow-hidden">
+<main class="flex-1 flex mt-[60px] h-[calc(100vh-60px)] overflow-hidden">
 
     <!-- Left Panel: Explorer -->
     <aside class="w-1/5 min-w-[240px] bg-surface border-r border-border flex flex-col">
@@ -198,12 +198,15 @@
                 <h3 class="font-headline-md text-headline-md font-bold text-text-primary" id="quest-role-title">Onboarding Quest</h3>
                 <p class="font-label-sm text-label-sm text-text-secondary mt-0.5" id="quest-subtitle">Load a repo to generate your path</p>
             </div>
-            <select id="role-selector" onchange="onRoleChange()" class="bg-surface-container-highest border border-border text-text-secondary font-label-sm text-label-sm rounded px-2 py-1 focus:ring-0 focus:border-primary cursor-pointer">
-                <option value="backend">Backend Dev</option>
-                <option value="frontend">Frontend Dev</option>
-                <option value="devops">DevOps</option>
-                <option value="fullstack">Full-stack</option>
-            </select>
+            <select id="role-selector" onchange="onRoleChange()" 
+class="bg-surface-container-highest border border-border text-text-secondary font-label-sm text-label-sm rounded-lg px-3 py-2 pr-8 focus:ring-0 focus:border-primary cursor-pointer appearance-none relative">
+
+    <option value="" disabled selected hidden>Mention Role</option>
+    <option value="backend">Backend Dev</option>
+    <option value="frontend">Frontend Dev</option>
+    <option value="devops">DevOps</option>
+    <option value="fullstack">Full-stack</option>
+</select>
         </div>
         <!-- progress bar (hidden until loaded) -->
         <div id="quest-progress-bar" class="px-md pt-md pb-sm border-b border-border" style="display:none">
