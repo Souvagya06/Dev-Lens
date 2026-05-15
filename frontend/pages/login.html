@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevLens - Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#131318",
+                        "surface-dim": "#131318",
+                        "on-tertiary": "#4f2500",
+                        "on-secondary-fixed-variant": "#004395",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "tertiary-container": "#a15100",
+                        "warning": "#f59e0b",
+                        "text-secondary": "#8b93a1",
+                        "inverse-on-surface": "#303036",
+                        "inverse-primary": "#732ee4",
+                        "on-primary-container": "#ede0ff",
+                        "on-surface": "#e4e1e9",
+                        "surface-container-low": "#1b1b20",
+                        "tertiary-fixed": "#ffdcc6",
+                        "secondary-fixed": "#d8e2ff",
+                        "primary": "#d2bbff",
+                        "border": "#1e1e2e",
+                        "primary-fixed-dim": "#d2bbff",
+                        "error-container": "#93000a",
+                        "success": "#10b981",
+                        "primary-fixed": "#eaddff",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "surface-container-lowest": "#0e0e13",
+                        "surface-container-high": "#2a292f",
+                        "on-primary-fixed": "#25005a",
+                        "danger": "#ef4444",
+                        "surface-tint": "#d2bbff",
+                        "secondary": "#adc6ff",
+                        "tertiary": "#ffb784",
+                        "surface": "#13131a",
+                        "outline": "#958da1",
+                        "text-primary": "#ffffff",
+                        "surface-container": "#1f1f25",
+                        "on-secondary-fixed": "#001a42",
+                        "surface-container-highest": "#35343a",
+                        "on-background": "#e4e1e9",
+                        "on-secondary": "#002e6a",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "secondary-container": "#0566d9",
+                        "on-surface-variant": "#ccc3d8",
+                        "inverse-surface": "#e4e1e9",
+                        "primary-container": "#7c3aed",
+                        "on-tertiary-container": "#ffe0cd",
+                        "on-tertiary-fixed": "#301400",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#e6ecff",
+                        "outline-variant": "#4a4455",
+                        "surface-bright": "#39383e",
+                        "on-primary": "#3f008e",
+                        "surface-variant": "#35343a",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#5a00c6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "2xl": "48px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0a0a0f;
+            color: theme('colors.text-primary');
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .glass-card {
+            background: rgba(19, 19, 26, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid theme('colors.border');
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .input-dark {
+            background-color: #0a0a0f;
+            border: 1px solid theme('colors.border');
+            color: theme('colors.text-primary');
+            transition: all 0.2s ease;
+        }
+
+        .input-dark:focus {
+            border-color: theme('colors.primary-container');
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+            outline: none;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, #7c3aed, #3b82f6);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+        }
+
+        /* Setup simple tab switching visibility */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="antialiased font-body-md">
+<div class="w-full max-w-md px-md">
+<!-- Header -->
+<div class="text-center mb-xl">
+<span
+            class="material-symbols-outlined text-primary text-[32px]"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >visibility</span
+          >
+<h1 class="font-headline-lg text-headline-lg text-text-primary mb-xs">DevLens</h1>
+<p class="font-body-md text-body-md text-text-secondary">X-Ray Vision for Any Codebase</p>
+</div>
+<!-- Main Card -->
+<div class="glass-card rounded-xl p-lg w-full">
+<!-- Tabs -->
+<div class="flex border-b border-border mb-lg">
+<button class="flex-1 pb-sm font-label-md text-label-md text-primary border-b-2 border-primary text-center" onclick="switchTab('login')">Login</button>
+<button class="flex-1 pb-sm font-label-md text-label-md text-text-secondary hover:text-text-primary transition-colors text-center border-b-2 border-transparent" onclick="switchTab('signup')">Sign Up</button>
+</div>
+<!-- Login Form -->
+<div class="tab-content active" id="login">
+<form class="flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-text-secondary" for="login-email">Email</label>
+<input class="input-dark rounded-md px-md py-sm font-body-sm text-body-sm w-full" id="login-email" placeholder="developer@devlens.ai" type="email"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-text-secondary flex justify-between" for="login-password">
+<span>Password</span>
+<a class="text-primary hover:underline" href="#">Forgot?</a>
+</label>
+<input class="input-dark rounded-md px-md py-sm font-body-sm text-body-sm w-full" id="login-password" placeholder="••••••••" type="password"/>
+</div>
+<button class="btn-gradient font-label-md text-label-md rounded-md py-sm w-full mt-sm" type="button">Login</button>
+</form>
+</div>
+<!-- Signup Form -->
+<div class="tab-content" id="signup">
+<form class="flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-text-secondary" for="signup-name">Name</label>
+<input class="input-dark rounded-md px-md py-sm font-body-sm text-body-sm w-full" id="signup-name" placeholder="Jane Doe" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-text-secondary" for="signup-email">Email</label>
+<input class="input-dark rounded-md px-md py-sm font-body-sm text-body-sm w-full" id="signup-email" placeholder="developer@devlens.ai" type="email"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-text-secondary" for="signup-password">Password</label>
+<input class="input-dark rounded-md px-md py-sm font-body-sm text-body-sm w-full" id="signup-password" placeholder="••••••••" type="password"/>
+</div>
+<button class="btn-gradient font-label-md text-label-md rounded-md py-sm w-full mt-sm" type="button">Create Account</button>
+</form>
+</div>
+<!-- OAuth Divider -->
+<div class="flex items-center my-lg">
+<div class="flex-grow border-t border-border"></div>
+<span class="px-md font-label-sm text-label-sm text-text-secondary">or continue with</span>
+<div class="flex-grow border-t border-border"></div>
+</div>
+<!-- GitHub OAuth -->
+<button class="w-full flex items-center justify-center gap-sm py-sm rounded-md border border-border bg-transparent hover:bg-surface-container-high transition-colors font-label-md text-label-md text-text-primary">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+</svg>
+                GitHub
+            </button>
+</div>
+<!-- Footer Text -->
+<div class="text-center mt-xl">
+<p class="font-label-sm text-label-sm text-text-secondary opacity-60">Built by Quantum Coders</p>
+</div>
+</div>
+<!-- Minimal script for tab switching within the prompt constraints -->
+<script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            const buttons = document.querySelectorAll('button.flex-1');
+            buttons.forEach(btn => {
+                btn.classList.remove('text-primary', 'border-primary');
+                btn.classList.add('text-text-secondary', 'border-transparent');
+            });
+            
+            event.currentTarget.classList.remove('text-text-secondary', 'border-transparent');
+            event.currentTarget.classList.add('text-primary', 'border-primary');
+        }
+    </script>
+</body></html>
