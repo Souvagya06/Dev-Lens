@@ -1,271 +1,105 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>DevLens - Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "background": "#131318",
-                        "surface-dim": "#131318",
-                        "on-tertiary": "#4f2500",
-                        "on-secondary-fixed-variant": "#004395",
-                        "tertiary-fixed-dim": "#ffb784",
-                        "tertiary-container": "#a15100",
-                        "warning": "#f59e0b",
-                        "text-secondary": "#8b93a1",
-                        "inverse-on-surface": "#303036",
-                        "inverse-primary": "#732ee4",
-                        "on-primary-container": "#ede0ff",
-                        "on-surface": "#e4e1e9",
-                        "surface-container-low": "#1b1b20",
-                        "tertiary-fixed": "#ffdcc6",
-                        "secondary-fixed": "#d8e2ff",
-                        "primary": "#d2bbff",
-                        "border": "#1e1e2e",
-                        "primary-fixed-dim": "#d2bbff",
-                        "error-container": "#93000a",
-                        "success": "#10b981",
-                        "primary-fixed": "#eaddff",
-                        "secondary-fixed-dim": "#adc6ff",
-                        "surface-container-lowest": "#0e0e13",
-                        "surface-container-high": "#2a292f",
-                        "on-primary-fixed": "#25005a",
-                        "danger": "#ef4444",
-                        "surface-tint": "#d2bbff",
-                        "secondary": "#adc6ff",
-                        "tertiary": "#ffb784",
-                        "surface": "#13131a",
-                        "outline": "#958da1",
-                        "text-primary": "#ffffff",
-                        "surface-container": "#1f1f25",
-                        "on-secondary-fixed": "#001a42",
-                        "surface-container-highest": "#35343a",
-                        "on-background": "#e4e1e9",
-                        "on-secondary": "#002e6a",
-                        "on-error-container": "#ffdad6",
-                        "on-tertiary-fixed-variant": "#713700",
-                        "secondary-container": "#0566d9",
-                        "on-surface-variant": "#ccc3d8",
-                        "inverse-surface": "#e4e1e9",
-                        "primary-container": "#7c3aed",
-                        "on-tertiary-container": "#ffe0cd",
-                        "on-tertiary-fixed": "#301400",
-                        "error": "#ffb4ab",
-                        "on-secondary-container": "#e6ecff",
-                        "outline-variant": "#4a4455",
-                        "surface-bright": "#39383e",
-                        "on-primary": "#3f008e",
-                        "surface-variant": "#35343a",
-                        "on-error": "#690005",
-                        "on-primary-fixed-variant": "#5a00c6"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "container-max": "1440px",
-                        "2xl": "48px",
-                        "base": "4px",
-                        "sm": "8px",
-                        "md": "16px",
-                        "gutter": "24px",
-                        "xl": "32px",
-                        "lg": "24px",
-                        "xs": "4px"
-                    },
-                    "fontFamily": {
-                        "headline-md": ["Inter"],
-                        "label-sm": ["JetBrains Mono"],
-                        "body-lg": ["Inter"],
-                        "headline-xl": ["Inter"],
-                        "body-sm": ["Inter"],
-                        "headline-lg": ["Inter"],
-                        "body-md": ["Inter"],
-                        "label-md": ["JetBrains Mono"]
-                    },
-                    "fontSize": {
-                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
-                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
-                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }]
-                    }
-                }
-            }
-        }
-    </script>
+tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#131318","surface-dim":"#131318","on-tertiary":"#4f2500","on-secondary-fixed-variant":"#004395","tertiary-fixed-dim":"#ffb784","tertiary-container":"#a15100",warning:"#f59e0b","text-secondary":"#8b93a1","inverse-on-surface":"#303036","inverse-primary":"#732ee4","on-primary-container":"#ede0ff","on-surface":"#e4e1e9","surface-container-low":"#1b1b20","tertiary-fixed":"#ffdcc6","secondary-fixed":"#d8e2ff",primary:"#d2bbff",border:"#1e1e2e","primary-fixed-dim":"#d2bbff","error-container":"#93000a",success:"#10b981","primary-fixed":"#eaddff","secondary-fixed-dim":"#adc6ff","surface-container-lowest":"#0e0e13","surface-container-high":"#2a292f","on-primary-fixed":"#25005a",danger:"#ef4444","surface-tint":"#d2bbff",secondary:"#adc6ff",tertiary:"#ffb784",surface:"#13131a",outline:"#958da1","text-primary":"#ffffff","surface-container":"#1f1f25","on-secondary-fixed":"#001a42","surface-container-highest":"#35343a","on-background":"#e4e1e9","on-secondary":"#002e6a","on-error-container":"#ffdad6","on-tertiary-fixed-variant":"#713700","secondary-container":"#0566d9","on-surface-variant":"#ccc3d8","inverse-surface":"#e4e1e9","primary-container":"#7c3aed","on-tertiary-container":"#ffe0cd","on-tertiary-fixed":"#301400",error:"#ffb4ab","on-secondary-container":"#e6ecff","outline-variant":"#4a4455","surface-bright":"#39383e","on-primary":"#3f008e","surface-variant":"#35343a","on-error":"#690005","on-primary-fixed-variant":"#5a00c6"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"container-max":"1440px","2xl":"48px",base:"4px",sm:"8px",md:"16px",gutter:"24px",xl:"32px",lg:"24px",xs:"4px"},fontFamily:{"headline-md":["Inter"],"label-sm":["JetBrains Mono"],"body-lg":["Inter"],"headline-xl":["Inter"],"body-sm":["Inter"],"headline-lg":["Inter"],"body-md":["Inter"],"label-md":["JetBrains Mono"]},fontSize:{"headline-md":["24px",{lineHeight:"32px",fontWeight:"600"}],"label-sm":["12px",{lineHeight:"16px",fontWeight:"500"}],"body-lg":["18px",{lineHeight:"28px",fontWeight:"400"}],"headline-xl":["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"700"}],"body-sm":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.01em",fontWeight:"600"}],"body-md":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-md":["14px",{lineHeight:"20px",fontWeight:"500"}]}}}}
+</script>
 <style>
-        body { background-color: #0a0a0f; }
-        .ambient-glow:hover { box-shadow: 0 0 20px 0 rgba(124, 58, 237, 0.15); }
-        .glass-overlay { background: rgba(30, 30, 46, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-    </style>
+body{background-color:#0a0a0f;}
+.ambient-glow:hover{box-shadow:0 0 20px 0 rgba(124,58,237,0.15);}
+.btn-primary{background:linear-gradient(135deg,#7c3aed 0%,#3b82f6 100%);transition:all 0.3s ease;}
+.btn-primary:hover{box-shadow:0 0 20px rgba(124,58,237,0.4);}
+</style>
 </head>
 <body class="text-on-surface font-body-md text-body-md min-h-screen flex flex-col">
-<!-- TopNavBar -->
-<nav class="bg-background/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-border shadow-sm transition-all duration-200 ease-in-out flex items-center justify-between px-gutter h-16">
-<div class="flex items-center gap-md">
-<img alt="DevLens Logo" class="h-8 w-8 rounded-DEFAULT object-cover" src="data:image/png;base64,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"/>
-<span class="font-headline-md text-headline-md font-bold text-primary">DevLens</span>
-<div class="ml-lg relative hidden md:flex items-center">
-<span class="material-symbols-outlined absolute left-sm text-text-secondary">search</span>
-<input class="bg-surface border border-border rounded-lg pl-xl pr-sm py-sm text-body-sm font-body-sm text-text-primary focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors w-64 placeholder:text-text-secondary" placeholder="Search..." type="text"/>
-</div>
-</div>
-<div class="hidden md:flex items-center gap-lg h-full">
-<a class="h-full flex items-center text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Repositories</a>
-<a class="h-full flex items-center text-text-secondary hover:text-text-primary transition-colors font-body-md text-body-md" href="#">Analytics</a>
-<a class="h-full flex items-center text-text-secondary hover:text-text-primary transition-colors font-body-md text-body-md" href="#">Settings</a>
-</div>
-<div class="flex items-center gap-sm">
-<button class="p-sm rounded-full text-text-secondary hover:text-text-primary hover:bg-surface-container-high/50 transition-colors">
-<span class="material-symbols-outlined">notifications</span>
-</button>
-<button class="p-sm rounded-full text-text-secondary hover:text-text-primary hover:bg-surface-container-high/50 transition-colors">
-<span class="material-symbols-outlined">help</span>
-</button>
-<div class="h-8 w-8 rounded-full bg-surface-container-highest ml-sm border border-border overflow-hidden">
-<img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8zuYwnc4SDJJU1yciXcpJotBfbblZ5n0H__OJRTMr9X2FOylawSSaR2WXDTwvuamqvJTmSX9aTjDnWwjWLri7e_LMNm5dYLkVMte3hyZqdXxxQwnwLARNv1J458CjTk9OlJHvtMZU9RjnWZhuAt9Sd7qbte8ttRy7VbGnNQrrX1D4QGEIPtJOh3zeQMsIJEdCAm9Xpc2M_les_HcJLm5K064jShboYuIAVUTT2tmJl9sCWPOmNmofY8qmjUdJwb7lZGw8hgheVIdZ"/>
-</div>
-</div>
-</nav>
-<!-- Main Content Canvas -->
+
+<!-- Nav — matching landing page style -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
+  <nav class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto">
+    <!-- Left: Logo -->
+    <div class="flex items-center gap-sm">
+      <span class="material-symbols-outlined text-primary text-[32px]" style="font-variation-settings:'FILL' 1">visibility</span>
+      <span class="font-headline-md text-headline-md font-bold text-on-surface">DevLens</span>
+    </div>
+    <!-- Center: Nav Links -->
+    <div class="hidden md:flex items-center gap-xl">
+      <a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Repositories</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Analytics</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Settings</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Pricing</a>
+    </div>
+    <!-- Right: Sign In + Get Started (matching landing page) -->
+    <div class="flex items-center gap-md">
+      <button class="hidden md:block text-on-surface-variant hover:text-on-surface font-label-md text-label-md px-md py-sm transition-colors">
+        Sign In
+      </button>
+      <button class="btn-primary text-white font-label-md text-label-md px-lg py-sm rounded-lg active:scale-95 transition-transform">
+        Get Started
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Main Content -->
 <main class="flex-grow pt-2xl px-gutter max-w-container-max mx-auto w-full flex flex-col gap-2xl pb-2xl">
-<!-- Hero Section -->
-<section class="flex flex-col items-center justify-center pt-2xl mt-xl text-center max-w-3xl mx-auto w-full">
-<h1 class="font-headline-xl text-headline-xl text-text-primary mb-md">Understand Any Codebase in 60 Seconds</h1>
-<p class="font-body-lg text-body-lg text-text-secondary mb-xl">Deep architectural analysis, vulnerability scanning, and code quality metrics powered by next-gen AI.</p>
-<div class="w-full relative flex items-center bg-surface border border-border rounded-full p-xs focus-within:border-primary-container focus-within:ring-2 focus-within:ring-primary-container/20 transition-all mb-lg shadow-lg">
-<span class="material-symbols-outlined text-text-secondary ml-md mr-sm">link</span>
-<input class="bg-transparent border-none w-full text-body-md font-body-md text-text-primary focus:outline-none focus:ring-0 placeholder:text-text-secondary" placeholder="https://github.com/owner/repo" type="text"/>
-<button class="bg-gradient-to-r from-primary-container to-secondary-container text-white px-lg py-sm rounded-full font-label-md text-label-md flex items-center gap-xs hover:shadow-[0_0_15px_rgba(124,58,237,0.4)] transition-shadow">
-                    Analyze
-                    <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
-</button>
-</div>
-<div class="flex flex-wrap justify-center gap-sm">
-<button class="px-md py-xs rounded-full border border-border bg-surface-container-low text-text-secondary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">Frontend Developer</button>
-<button class="px-md py-xs rounded-full border border-primary-container bg-primary-container/10 text-primary font-label-sm text-label-sm">Full Stack</button>
-<button class="px-md py-xs rounded-full border border-border bg-surface-container-low text-text-secondary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">Backend Developer</button>
-<button class="px-md py-xs rounded-full border border-border bg-surface-container-low text-text-secondary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">DevOps Engineer</button>
-</div>
-</section>
-<!-- Past Analyses Grid -->
-<section class="w-full mt-lg">
-<div class="flex items-center justify-between mb-lg">
-<h2 class="font-headline-lg text-headline-lg text-text-primary">Recent Analyses</h2>
-<button class="text-text-secondary hover:text-text-primary font-label-md text-label-md flex items-center gap-xs transition-colors">
-                    View All <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
-</button>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
-<!-- Card 1 -->
-<div class="bg-surface border border-border rounded-lg p-md flex flex-col ambient-glow transition-all">
-<div class="flex justify-between items-start mb-md">
-<div>
-<h3 class="font-headline-md text-headline-md text-text-primary text-[18px] leading-tight">nextjs-commerce</h3>
-<p class="font-body-sm text-body-sm text-text-secondary mt-xs">vercel/nextjs-commerce</p>
-</div>
-<span class="bg-success/10 text-success font-label-sm text-label-sm px-sm py-xs rounded-DEFAULT border border-success/20">98 A+</span>
-</div>
-<div class="flex items-center gap-md mb-lg">
-<div class="flex items-center text-text-secondary font-label-sm text-label-sm gap-xs">
-<span class="material-symbols-outlined" style="font-size: 16px;">description</span>
-                            1,245 files
-                        </div>
-<div class="flex items-center text-text-secondary font-label-sm text-label-sm gap-xs">
-<span class="material-symbols-outlined" style="font-size: 16px;">calendar_today</span>
-                            2 hrs ago
-                        </div>
-</div>
-<button class="mt-auto pt-md border-t border-border flex items-center justify-between text-text-secondary hover:text-primary transition-colors font-label-md text-label-md w-full text-left">
-                        View Dashboard
-                        <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
-</button>
-</div>
-<!-- Card 2 -->
-<div class="bg-surface border border-border rounded-lg p-md flex flex-col ambient-glow transition-all">
-<div class="flex justify-between items-start mb-md">
-<div>
-<h3 class="font-headline-md text-headline-md text-text-primary text-[18px] leading-tight">kubernetes</h3>
-<p class="font-body-sm text-body-sm text-text-secondary mt-xs">kubernetes/kubernetes</p>
-</div>
-<span class="bg-warning/10 text-warning font-label-sm text-label-sm px-sm py-xs rounded-DEFAULT border border-warning/20">82 B</span>
-</div>
-<div class="flex items-center gap-md mb-lg">
-<div class="flex items-center text-text-secondary font-label-sm text-label-sm gap-xs">
-<span class="material-symbols-outlined" style="font-size: 16px;">description</span>
-                            34,192 files
-                        </div>
-<div class="flex items-center text-text-secondary font-label-sm text-label-sm gap-xs">
-<span class="material-symbols-outlined" style="font-size: 16px;">calendar_today</span>
-                            Yesterday
-                        </div>
-</div>
-<button class="mt-auto pt-md border-t border-border flex items-center justify-between text-text-secondary hover:text-primary transition-colors font-label-md text-label-md w-full text-left">
-                        View Dashboard
-                        <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
-</button>
-</div>
-<!-- Card 3 -->
-<div class="bg-surface border border-border rounded-lg p-md flex flex-col ambient-glow transition-all">
-<div class="flex justify-between items-start mb-md">
-<div>
-<h3 class="font-headline-md text-headline-md text-text-primary text-[18px] leading-tight">legacy-billing-api</h3>
-<p class="font-body-sm text-body-sm text-text-secondary mt-xs">internal/legacy-billing</p>
-</div>
-<span class="bg-danger/10 text-danger font-label-sm text-label-sm px-sm py-xs rounded-DEFAULT border border-danger/20">45 F</span>
-</div>
-<div class="flex items-center gap-md mb-lg">
-<div class="flex items-center text-text-secondary font-label-sm text-label-sm gap-xs">
-<span class="material-symbols-outlined" style="font-size: 16px;">description</span>
-                            890 files
-                        </div>
-<div class="flex items-center text-text-secondary font-label-sm text-label-sm gap-xs">
-<span class="material-symbols-outlined" style="font-size: 16px;">calendar_today</span>
-                            Oct 24
-                        </div>
-</div>
-<button class="mt-auto pt-md border-t border-border flex items-center justify-between text-text-secondary hover:text-primary transition-colors font-label-md text-label-md w-full text-left">
-                        View Dashboard
-                        <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
-</button>
-</div>
-</div>
-</section>
-<!-- Hidden Loading State (Demonstration purposes) -->
-<section class="hidden w-full max-w-2xl mx-auto flex-col items-center justify-center mt-2xl bg-surface border border-border rounded-lg p-xl">
-<div class="w-12 h-12 rounded-full border-4 border-surface-container-high border-t-primary-container animate-[spin_1s_linear_infinite] mb-lg"></div>
-<h3 class="font-headline-md text-headline-md text-text-primary mb-md">Analyzing Repository...</h3>
-<div class="w-full bg-surface-container rounded-full h-2 mb-lg overflow-hidden">
-<div class="bg-gradient-to-r from-primary-container to-secondary-container h-full w-[45%] rounded-full relative">
-<div class="absolute inset-0 bg-white/20 animate-pulse"></div>
-</div>
-</div>
-<div class="w-full bg-[#0a0a0f] border border-border rounded-md p-md font-label-sm text-label-sm text-success font-mono text-left opacity-80 h-32 overflow-hidden relative">
-<div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#0a0a0f] z-10 pointer-events-none"></div>
-<div class="flex flex-col gap-xs relative z-0">
-<p>&gt; initializing analysis agent...</p>
-<p>&gt; cloning repository structure [████████░░] 80%</p>
-<p>&gt; scanning for known vulnerabilities (CVEs)...</p>
-<p>&gt; mapping dependency graph...</p>
-<p class="animate-pulse text-primary">&gt; analyzing ast patterns in /src/components...</p>
-</div>
-</div>
-</section>
+  <!-- Hero Section -->
+  <section class="flex flex-col items-center justify-center pt-2xl mt-xl text-center max-w-3xl mx-auto w-full">
+    <h1 class="font-headline-xl text-headline-xl text-text-primary mb-md">Understand Any Codebase in 60 Seconds</h1>
+    <p class="font-body-lg text-body-lg text-text-secondary mb-xl">Deep architectural analysis, vulnerability scanning, and code quality metrics powered by next-gen AI.</p>
+    <div class="w-full relative flex items-center bg-surface border border-border rounded-full p-xs focus-within:border-primary-container focus-within:ring-2 focus-within:ring-primary-container/20 transition-all mb-lg shadow-lg">
+      <span class="material-symbols-outlined text-text-secondary ml-md mr-sm">link</span>
+      <input class="bg-transparent border-none w-full text-body-md font-body-md text-text-primary focus:outline-none focus:ring-0 placeholder:text-text-secondary" placeholder="https://github.com/owner/repo" type="text"/>
+      <button class="bg-gradient-to-r from-primary-container to-secondary-container text-white px-lg py-sm rounded-full font-label-md text-label-md flex items-center gap-xs hover:shadow-[0_0_15px_rgba(124,58,237,0.4)] transition-shadow">
+        Analyze
+        <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
+      </button>
+    </div>
+    <div class="flex flex-wrap justify-center gap-sm">
+      <button class="px-md py-xs rounded-full border border-border bg-surface-container-low text-text-secondary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">Frontend Developer</button>
+      <button class="px-md py-xs rounded-full border border-primary-container bg-primary-container/10 text-primary font-label-sm text-label-sm">Full Stack</button>
+      <button class="px-md py-xs rounded-full border border-border bg-surface-container-low text-text-secondary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">Backend Developer</button>
+      <button class="px-md py-xs rounded-full border border-border bg-surface-container-low text-text-secondary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">DevOps Engineer</button>
+    </div>
+  </section>
+
+  <!-- Recent Analyses -->
+  <section class="w-full mt-lg">
+    <div class="flex items-center justify-between mb-lg">
+      <h2 class="font-headline-lg text-headline-lg text-text-primary">Recent Analyses</h2>
+      <button class="text-text-secondary hover:text-text-primary font-label-md text-label-md flex items-center gap-xs transition-colors">
+        View All <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+      </button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+      <div class="bg-surface border border-border rounded-lg p-md flex flex-col ambient-glow transition-all">
+        <div class="flex justify-between items-start mb-md">
+          <div>
+            <h3 class="font-headline-md text-headline-md text-text-primary text-[18px] leading-tight">nextjs-commerce</h3>
+            <p class="font-body-sm text-body-sm text-text-secondary mt-xs">vercel/nextjs-commerce</p>
+          </div>
+          <span class="bg-success/10 text-success font-label-sm text-label-sm px-sm py-xs rounded-DEFAULT border border-success/20">98 A+</span>
+        </div>
+        <div class="flex items-center gap-md mb-lg">
+          <div class="flex items-center text-text-secondary font-label-sm text-label-sm gap-xs">
+            <span class="material-symbols-outlined" style="font-size:16px;">description</span>1,245 files
+          </div>
+          <div class="flex items-center text-text-secondary font-label-sm text-label-sm gap-xs">
+            <span class="material-symbols-outlined" style="font-size:16px;">calendar_today</span>2 hrs ago
+          </div>
+        </div>
+        <button class="mt-auto pt-md border-t border-border flex items-center justify-between text-text-secondary hover:text-primary transition-colors font-label-md text-label-md w-full text-left">
+          View Dashboard
+          <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </section>
 </main>
-</body></html>
+</body>
+</html>
