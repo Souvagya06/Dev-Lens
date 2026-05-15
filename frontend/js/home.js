@@ -51,9 +51,15 @@ async function analyzeRepo() {
       localStorage.setItem("devlens_repoUrl", repoUrl);
       localStorage.setItem("devlens_repoName", data.repo);
       showPopup("Analysis complete! Loading dashboard...", "success");
+      // Restore main section before redirect so Back button lands here correctly
+      document.getElementById("main-section").classList.remove("hidden");
+      document.getElementById("loading-section").classList.add("hidden");
+      history.replaceState(null, "", window.location.href);
       setTimeout(() => {
-        window.location.href = "/dashboard.html";
+        window.location.href = `/dashboard.html?repo_id=${data.analysisId}`;
       }, 1000);
+    } else if (data.message === "Invalid token" || data.message === "Unauthorized") {
+      logout();
     } else {
       showError(data.message || "Analysis failed");
     }
@@ -118,6 +124,12 @@ async function loadPastAnalyses() {
 
     const container = document.getElementById("past-analyses");
 
+    // If the server says the token is invalid/expired, log out silently
+    if (res.status === 401 || data.message === "Invalid token" || data.message === "Unauthorized") {
+      logout();
+      return;
+    }
+
     if (!data.success || data.analyses.length === 0) {
       container.innerHTML = `
         <p class="text-gray-500 text-sm col-span-3">
@@ -152,9 +164,7 @@ async function loadPastAnalyses() {
 }
 
 function openAnalysis(id, repo) {
-  localStorage.setItem("devlens_analysisId", id);
-  localStorage.setItem("devlens_repoName", repo);
-  window.location.href = "/dashboard.html";
+  window.location.href = `/dashboard.html?repo_id=${id}`;
 }
 
 function getHealthColor(score) {
@@ -203,14 +213,18 @@ function logout() {
   localStorage.removeItem("devlens_user");
   localStorage.removeItem("devlens_analysisId");
   localStorage.removeItem("devlens_repoName");
-  window.location.href = "/login.html";
+  window.location.href = "/";
 }
 
 // ── PROTECT PAGE ──────────────────────────────────────────
 const token = localStorage.getItem("devlens_token");
 if (!token) {
-  window.location.href = "/login.html";
+  window.location.href = "/";
 }
+
+// Always reset to main section visible on load (handles browser Back from dashboard)
+document.getElementById("main-section").classList.remove("hidden");
+document.getElementById("loading-section").classList.add("hidden");
 
 // Show user email in navbar
 const user = JSON.parse(localStorage.getItem("devlens_user") || "{}");

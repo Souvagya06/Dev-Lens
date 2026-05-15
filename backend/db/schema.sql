@@ -34,3 +34,18 @@ CREATE TABLE IF NOT EXISTS edges (
   from_file  TEXT,
   to_file    TEXT
 );
+CREATE TABLE IF NOT EXISTS onboarding_paths (
+  id            TEXT PRIMARY KEY,
+  analysis_id   TEXT NOT NULL REFERENCES repos(id),
+  role          TEXT NOT NULL,
+  roadmap_json  TEXT,a
+  created_at    TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS qna_history (
+  id            TEXT PRIMARY KEY,
+  analysis_id   TEXT NOT NULL REFERENCES repos(id),
+  question      TEXT NOT NULL,
+  answer        TEXT,
+  created_at    TEXT DEFAULT (datetime('now'))
+);

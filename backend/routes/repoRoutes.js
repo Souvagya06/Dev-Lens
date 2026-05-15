@@ -65,17 +65,25 @@ router.post("/analyze", authMiddleware, async (req, res) => {
       });
     }
 
-    const repoName = repoUrl
+    // ✅ FIX 1: properly extract owner and repo name separately
+    const slugFull = repoUrl
       .replace("https://github.com/", "")
       .replace(".git", "")
-      .replace(/\//g, "-");
+      .replace(/\/$/, "");
+    const [repoOwner, repoNameOnly] = slugFull.split("/");
+    const repoName = slugFull.replace("/", "-"); // used for cloning folder
 
-    console.log(`\n🚀 Starting analysis: ${repoName}`);
+    console.log(`\n🚀 Starting analysis: ${slugFull}`);
 
     // Clone repo
     const repoPath = await cloneRepo(repoUrl, repoName);
     const allFiles = getAllFiles(repoPath);
     console.log(`📁 Found ${allFiles.length} files`);
+
+    // Build relative paths list for AI context
+    const allRelativePaths = allFiles.map(f =>
+      f.replace(repoPath, "").replace(/\\/g, "/")
+    );
 
     // Analyze first 15 files
     const filesToAnalyze = allFiles.slice(0, 15);
@@ -84,7 +92,6 @@ router.post("/analyze", authMiddleware, async (req, res) => {
     for (const filePath of filesToAnalyze) {
       const code = fs.readFileSync(filePath, "utf-8");
 
-      // Skip files larger than 5KB
       if (code.length > 5000) {
         console.log(`⏭️ Skipping large file: ${path.basename(filePath)}`);
         continue;
@@ -96,19 +103,41 @@ router.post("/analyze", authMiddleware, async (req, res) => {
 
       console.log(`🔍 Analyzing: ${relativePath}`);
 
-      const aiResponse = await analyzeCode(code, relativePath);
+      const aiResponse = await analyzeCode(code, relativePath, allRelativePaths);
 
       let parsed;
       try {
-        parsed = JSON.parse(aiResponse);
+        parsed = typeof aiResponse === "string" ? JSON.parse(aiResponse) : aiResponse;
       } catch {
         parsed = {
-          summary: aiResponse,
+          summary: String(aiResponse),
           importance: "medium",
           danger_score: 5,
           dependencies: []
         };
       }
+
+      // Ensure summary is a string
+      if (parsed.summary && typeof parsed.summary === "object") {
+        parsed.summary = JSON.stringify(parsed.summary);
+      }
+
+      // Resolve dependencies: match AI output against real file paths
+      const rawDeps = Array.isArray(parsed.dependencies) ? parsed.dependencies : [];
+      parsed.dependencies = rawDeps
+        .map(dep => {
+          // If it already exactly matches a known path, use it
+          if (allRelativePaths.includes(dep)) return dep;
+          // Try matching by basename
+          const depBase = dep.split("/").pop().replace(/\.[^.]+$/, ""); // strip extension
+          const match = allRelativePaths.find(p => {
+            const pBase = p.split("/").pop().replace(/\.[^.]+$/, "");
+            return pBase === depBase;
+          });
+          return match || null;
+        })
+        .filter(Boolean) // remove nulls
+        .filter((v, i, a) => a.indexOf(v) === i); // deduplicate
 
       results.push({ path: relativePath, ...parsed });
     }
@@ -122,21 +151,25 @@ router.post("/analyze", authMiddleware, async (req, res) => {
     // Save to Turso
     const analysisId = require("crypto").randomUUID();
 
+    // ✅ FIX 3: save owner and name as separate columns
     await client.execute({
-      sql: `INSERT INTO repos (id, user_id, url, name, status, health_score, repo_context, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+      sql: `INSERT INTO repos (id, user_id, url, owner, name, status, health_score, repo_context, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       args: [
         analysisId,
         userId,
         repoUrl,
-        repoName,
+        repoOwner,      // e.g. "facebook"
+        repoNameOnly,   // e.g. "react"
         "complete",
         healthScore,
         JSON.stringify(results)
       ]
     });
 
-    // Save individual files
+    // Save individual files + extract edges
+    const edgePairs = new Set(); // deduplicate
+
     for (const file of results) {
       const fileId = require("crypto").randomUUID();
       await client.execute({
@@ -146,26 +179,53 @@ router.post("/analyze", authMiddleware, async (req, res) => {
           fileId,
           analysisId,
           file.path,
-          file.summary,
+          typeof file.summary === "string" ? file.summary : JSON.stringify(file.summary),
           file.importance,
           file.danger_score,
           JSON.stringify(file.dependencies || [])
         ]
       });
+
+      // Save dependency edges: file.dependencies is array of paths this file imports
+      const deps = Array.isArray(file.dependencies) ? file.dependencies : [];
+      for (const dep of deps) {
+        const edgeKey = `${file.path}|${dep}`;
+        if (!edgePairs.has(edgeKey)) {
+          edgePairs.add(edgeKey);
+          const edgeId = require("crypto").randomUUID();
+          await client.execute({
+            sql: `INSERT INTO edges (id, repo_id, from_file, to_file) VALUES (?, ?, ?, ?)`,
+            args: [edgeId, analysisId, file.path, dep]
+          });
+        }
+      }
     }
 
     console.log(`✅ Saved to DB. Analysis ID: ${analysisId}`);
 
+    // ── CLEANUP: delete cloned repo from disk ──────────────
+    try {
+      fs.rmSync(repoPath, { recursive: true, force: true });
+      console.log(`🗑️ Cleaned up temp repo: ${repoName}`);
+    } catch (cleanupErr) {
+      console.warn(`⚠️ Cleanup warning: ${cleanupErr.message}`);
+    }
+
     res.json({
       success: true,
       analysisId,
-      repo: repoName,
+      repo: repoNameOnly,
       totalFiles: allFiles.length,
       analyzedFiles: results.length
     });
 
   } catch (error) {
     console.error("❌ Error:", error.message);
+    try {
+      const failedPath = path.join(__dirname, "../temp", repoName);
+      fs.rmSync(failedPath, { recursive: true, force: true });
+    } catch (_) {}
+
     res.status(500).json({
       success: false,
       message: "Analysis failed",
@@ -175,15 +235,14 @@ router.post("/analyze", authMiddleware, async (req, res) => {
 });
 
 // ── 2. GET HISTORY ────────────────────────────────────────
-// GET /api/repo/history
-// ⚠️ MUST be before /:analysisId route
+// GET /api/repo/history  ⚠️ MUST be before /:analysisId
 router.get("/history", authMiddleware, async (req, res) => {
   try {
     const result = await client.execute({
       sql: `SELECT 
               id,
               url as repo_url,
-              name as repo_name,
+              COALESCE(owner || '/' || name, name, url) as repo_name,
               health_score,
               status,
               created_at,
@@ -199,16 +258,12 @@ router.get("/history", authMiddleware, async (req, res) => {
 
   } catch (error) {
     console.error("❌ History error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch history"
-    });
+    res.status(500).json({ success: false, message: "Failed to fetch history" });
   }
 });
 
 // ── 3. GET SINGLE ANALYSIS ────────────────────────────────
-// GET /api/repo/:analysisId
-// ⚠️ MUST be after /history route
+// GET /api/repo/:analysisId  ⚠️ MUST be after /history
 router.get("/:analysisId", authMiddleware, async (req, res) => {
   try {
     const { analysisId } = req.params;
@@ -219,10 +274,7 @@ router.get("/:analysisId", authMiddleware, async (req, res) => {
     });
 
     if (repoResult.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Analysis not found"
-      });
+      return res.status(404).json({ success: false, message: "Analysis not found" });
     }
 
     const repo = repoResult.rows[0];
@@ -232,10 +284,7 @@ router.get("/:analysisId", authMiddleware, async (req, res) => {
 
   } catch (error) {
     console.error("❌ Fetch error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch analysis"
-    });
+    res.status(500).json({ success: false, message: "Failed to fetch analysis" });
   }
 });
 

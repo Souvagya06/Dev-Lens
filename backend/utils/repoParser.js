@@ -2,19 +2,13 @@ const simpleGit = require("simple-git");
 const fs = require("fs");
 const path = require("path");
 
-// Clone the repo into backend/repos/repoName
+// Clone the repo into backend/temp/repoName (deleted after analysis)
 async function cloneRepo(repoUrl, repoName) {
-  const repoPath = path.join(__dirname, "../repos", repoName);
+  const repoPath = path.join(__dirname, "../temp", repoName);
 
+  // If a stale temp folder exists (from a failed previous run), clean it first
   if (fs.existsSync(repoPath)) {
-    const existingFiles = getAllFiles(repoPath);
-
-    if (existingFiles.length > 0) {
-      console.log(`✅ Repo already exists: ${repoName}`);
-      return repoPath;
-    }
-
-    console.warn(`⚠️ Repo folder exists but has no analyzable files. Re-cloning: ${repoName}`);
+    console.log(`🗑️ Removing stale temp folder: ${repoName}`);
     fs.rmSync(repoPath, { recursive: true, force: true });
   }
 
