@@ -4,6 +4,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Dashboard - DevLens</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -51,6 +52,44 @@
         animation: shimmer 1.5s infinite;
         border-radius: 4px;
     }
+    /* ── Blast Graph ── */
+    #blast-svg { display:block; width:100%; height:100%; }
+    .g-node circle { stroke-width:2; cursor:pointer; transition:filter 0.2s; }
+    .g-node circle:hover { filter:brightness(1.4); }
+    .g-node text { font-family:'JetBrains Mono',monospace; font-size:9px; fill:#c8d8f0; pointer-events:none; user-select:none; }
+    .g-link { stroke:rgba(74,96,128,0.45); stroke-width:1.5; fill:none; marker-end:url(#bl-arrow); }
+    .g-link.bl-highlighted { stroke:#ef4444; stroke-width:2.5; opacity:1 !important; }
+    .g-link.bl-dimmed { opacity:0.07; }
+    @keyframes blast-ring-expand {
+        0%   { r:4;  opacity:0.85; stroke-width:3; }
+        70%  { opacity:0.3; }
+        100% { opacity:0; stroke-width:0.5; }
+    }
+    .blast-ring { fill:none; stroke:#ef4444; stroke-width:2; opacity:0; animation:blast-ring-expand 1s ease-out forwards; }
+    .blast-ring:nth-child(2){ animation-delay:0.18s; }
+    .blast-ring:nth-child(3){ animation-delay:0.36s; }
+    @keyframes node-impact { 0%{ filter:drop-shadow(0 0 10px #ef4444); } 100%{ filter:none; } }
+    .g-node.impacted circle { animation:node-impact 0.9s ease-out forwards; }
+
+    /* Blast info overlay */
+    #blast-info {
+        position:absolute; bottom:52px; left:50%; transform:translateX(-50%);
+        background:rgba(19,19,26,0.92); backdrop-filter:blur(8px);
+        border:1px solid #1e1e2e; border-radius:10px;
+        padding:10px 16px; font-family:'JetBrains Mono',monospace;
+        font-size:11px; color:#c8d8f0; white-space:nowrap;
+        display:none; z-index:20; pointer-events:none;
+        box-shadow:0 4px 24px rgba(0,0,0,0.5);
+    }
+    #blast-info.visible { display:block; animation:fadeInUp 0.2s ease; }
+    #blast-info .bi-name { font-size:13px; font-weight:700; color:#fff; margin-bottom:4px; }
+    #blast-info .bi-badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+    #blast-info .bi-high  { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
+    #blast-info .bi-med   { background:rgba(245,158,11,0.12); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); }
+    #blast-info .bi-low   { background:rgba(16,185,129,0.1);  color:#10b981; border:1px solid rgba(16,185,129,0.3); }
+    #blast-info .bi-stat  { color:#8b93a1; }
+    #blast-info .bi-stat span { color:#d2bbff; font-weight:700; }
+
     /* Active nav link underline — matches landing page purple underline */
     .nav-active {
         color: #d2bbff;
@@ -107,6 +146,12 @@
             <button class="text-text-secondary hover:text-primary transition-colors">
                 <span class="material-symbols-outlined text-[18px]">more_horiz</span>
             </button>
+        </div>
+        <!-- Repo badge — shown after load -->
+        <div id="repo-badge" style="display:none" class="px-sm py-1.5 border-b border-border flex items-center gap-xs bg-surface-container-low">
+            <span class="material-symbols-outlined text-[14px] text-success">check_circle</span>
+            <span id="repo-name-badge" class="font-label-sm text-label-sm text-text-secondary truncate flex-1"></span>
+            <span id="health-score-badge" class="font-label-sm text-[10px] text-primary font-bold bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded"></span>
         </div>
         <!-- search — only when repo loaded -->
         <div class="p-sm border-b border-border" id="file-search-wrap" style="display:none">
@@ -165,9 +210,14 @@
                 <p class="font-label-md text-label-md text-text-secondary tracking-widest uppercase">Topology Canvas</p>
             </div>
 
-            <!-- Loaded graph placeholder -->
-            <div id="graph-loaded-state" style="display:none" class="absolute inset-0 flex items-center justify-center fade-in-up">
-                <p class="font-label-md text-label-md text-text-secondary tracking-widest uppercase">Topology Canvas</p>
+            <!-- Loaded graph: real D3 SVG -->
+            <svg id="blast-svg" style="display:none; position:absolute; inset:0;"></svg>
+            <!-- Blast info overlay -->
+            <div id="blast-info">
+                <div class="bi-name" id="bi-name">—</div>
+                <div id="bi-badge" class="bi-badge bi-low">LOW RISK</div>
+                <div class="bi-stat">Blast radius: <span id="bi-count">0</span> files affected</div>
+                <div class="bi-stat" id="bi-summary" style="max-width:280px;white-space:normal;margin-top:3px;line-height:1.5"></div>
             </div>
         </div>
 
@@ -302,18 +352,47 @@ class="bg-surface-container-highest border border-border text-text-secondary fon
 </div>
 
 <script>
-let chatOpen = false;
-let repoLoaded = false;
-let currentRole = 'backend';
-let questSteps = [];
+// ─── Config ──────────────────────────────────────────────────────────────────
+// Change this to your backend base URL (Express / FastAPI / etc.)
+const API_BASE = '/api';
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let chatOpen     = false;
+let repoLoaded   = false;
+let currentRole  = 'backend';
+let questSteps   = [];
 let allFileNodes = [];
 let lastFileTree = [];
+let currentRepoId   = null;
+let currentRepoSlug = null;
+let dbFiles  = [];   // raw rows from files table
+let dbEdges  = [];   // raw rows from edges table
 
-// ─── Chat ───────────────────────────────────────────────────────────────────
+// ─── On Page Load — check ?repo_id= param ────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const repoId = params.get('repo_id');
+    if (repoId) loadRepoFromDB(repoId);
+});
+
+// Helper: fetch with JWT auth header
+function apiFetch(url, options = {}) {
+    const token = localStorage.getItem('devlens_token');
+    return fetch(url, {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            ...(options.headers || {})
+        }
+    });
+}
+
+// ─── Chat ────────────────────────────────────────────────────────────────────
 function toggleChat() {
     chatOpen = !chatOpen;
     const panel = document.getElementById('chat-panel');
-    const icon = document.getElementById('chat-fab-icon');
+    const icon  = document.getElementById('chat-fab-icon');
     if (chatOpen) {
         panel.classList.remove('hidden-panel');
         panel.classList.add('visible-panel');
@@ -328,11 +407,11 @@ function toggleChat() {
 
 function sendChat() {
     const input = document.getElementById('chat-input');
-    const text = input.value.trim();
+    const text  = input.value.trim();
     if (!text) return;
     appendUserMsg(text);
     input.value = '';
-    simulateAIReply(text);
+    sendAIChat(text);
 }
 
 function quickPrompt(text) {
@@ -362,12 +441,13 @@ function appendAIMsg(html) {
     container.scrollTop = container.scrollHeight;
 }
 
-function simulateAIReply(userMsg) {
+// Real AI chat using repo context from DB
+async function sendAIChat(userMsg) {
     const container = document.getElementById('chat-messages');
-    const typing = document.createElement('div');
-    typing.id = 'typing-indicator';
-    typing.className = 'flex gap-sm';
-    typing.innerHTML = `
+    const typing    = document.createElement('div');
+    typing.id       = 'typing-indicator';
+    typing.className= 'flex gap-sm';
+    typing.innerHTML= `
         <div class="w-7 h-7 rounded bg-surface-container-highest border border-border flex items-center justify-center shrink-0 mt-0.5">
             <span class="material-symbols-outlined text-[14px] text-primary">smart_toy</span>
         </div>
@@ -378,105 +458,162 @@ function simulateAIReply(userMsg) {
         </div>`;
     container.appendChild(typing);
     container.scrollTop = container.scrollHeight;
-    setTimeout(() => {
-        typing.remove();
-        if (!repoLoaded) {
+
+    if (!repoLoaded || !currentRepoId) {
+        setTimeout(() => {
+            typing.remove();
             appendAIMsg('Please load a GitHub repo first so I can answer questions about the codebase.');
-            return;
-        }
-        const lower = userMsg.toLowerCase();
-        if (lower.includes('auth')) {
-            appendAIMsg('Authentication is handled in <code class="font-label-sm text-secondary bg-background px-1 rounded">security.py</code>. It uses JWT tokens validated on every protected route via the <code class="font-label-sm text-secondary bg-background px-1 rounded">get_current_user</code> dependency.');
-        } else if (lower.includes('break') || lower.includes('delete') || lower.includes('blast')) {
-            appendAIMsg('🔴 <strong>Blast Radius:</strong> Deleting <code class="font-label-sm text-secondary bg-background px-1 rounded">applications.py</code> would break <strong>routing.py</strong>, <strong>security.py</strong>, and <strong>__init__.py</strong> — 3 direct dependents.');
-        } else if (lower.includes('entry') || lower.includes('main') || lower.includes('start')) {
-            appendAIMsg('The main entry point is <code class="font-label-sm text-secondary bg-background px-1 rounded">applications.py</code> — it boots the FastAPI app, registers all routers, and sets up middleware.');
-        } else {
-            appendAIMsg('Try asking about <span class="text-primary">auth</span>, <span class="text-primary">entry points</span>, or <span class="text-primary">blast radius</span> for specific files.');
-        }
-    }, 1200);
+        }, 600);
+        return;
+    }
+
+    // Build context from DB data
+    const fileContext = dbFiles.slice(0, 60).map(f =>
+        `${f.path} [danger:${f.danger_score}, importance:${f.importance}] — ${typeof f.summary === 'string' ? f.summary.slice(0,120) : ''}`
+    ).join('\n');
+    const edgeContext = dbEdges.slice(0, 80).map(e => `${e.from_file} → ${e.to_file}`).join('\n');
+
+    const prompt = `You are DevLens AI, an expert at explaining codebases. Be concise and specific.
+Repo: ${currentRepoSlug}
+
+FILES (path | danger | importance | summary):
+${fileContext || 'No file data available.'}
+
+DEPENDENCY EDGES:
+${edgeContext || 'No edge data available.'}
+
+Question: ${userMsg}
+
+Answer in 2-4 sentences. Name specific files. No markdown, plain text only.`;
+
+    try {
+        const res  = await apiFetch('/api/ai/chat', {
+            method: 'POST',
+            body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        const text = data.text || 'Could not get a response.';
+        typing.remove();
+        appendAIMsg(escapeHtml(text));
+
+        // Save to qna_history
+        try {
+            await apiFetch(`${API_BASE}/repo/${currentRepoId}/qna`, {
+                method: 'POST',
+                body: JSON.stringify({ question: userMsg, answer: text })
+            });
+        } catch(_) {}
+    } catch(e) {
+        typing.remove();
+        appendAIMsg('AI error — please try again.');
+        console.error('AI chat error:', e);
+    }
 }
 
 function escapeHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ─── Repo Loading ────────────────────────────────────────────────────────────
-async function loadRepo(repoUrl) {
-    const slug = repoUrl.replace('https://github.com/', '').replace(/\/$/, '');
-    const [owner, repo] = slug.split('/');
-    if (!owner || !repo) return;
+// ─── Main: Load repo from Turso DB via backend ────────────────────────────────
+async function loadRepoFromDB(repoId) {
+    currentRepoId = repoId;
 
     // Show skeletons
-    document.getElementById('explorer-empty').style.display = 'none';
-    document.getElementById('explorer-loading').style.display = 'flex';
+    document.getElementById('explorer-empty').style.display     = 'none';
+    document.getElementById('explorer-loading').style.display   = 'flex';
     document.getElementById('explorer-loading').style.flexDirection = 'column';
-    document.getElementById('quest-empty').style.display = 'none';
-    document.getElementById('quest-loading').style.display = 'flex';
-    document.getElementById('quest-loading').style.flexDirection = 'column';
-
-    // Show repo badge
-    document.getElementById('repo-badge').style.display = 'flex';
-    document.getElementById('repo-name-badge').textContent = slug;
+    document.getElementById('quest-empty').style.display        = 'none';
+    document.getElementById('quest-loading').style.display      = 'flex';
+    document.getElementById('quest-loading').style.flexDirection= 'column';
 
     // Switch canvas
-    document.getElementById('repo-input-state').style.display = 'none';
-    document.getElementById('graph-loaded-state').style.display = 'flex';
-    document.getElementById('graph-toolbar').style.display = 'flex';
-    document.getElementById('graph-legend').style.display = 'flex';
+    document.getElementById('repo-input-state').style.display   = 'none';
+    document.getElementById('graph-toolbar').style.display      = 'flex';
+    document.getElementById('graph-legend').style.display       = 'flex';
 
-    // 1. Fetch real file tree from GitHub API
-    let fileTree = [];
     try {
-        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees/HEAD?recursive=1`);
-        const data = await res.json();
-        if (data.tree) {
-            fileTree = buildTreeFromPaths(data.tree);
+        // 1. Fetch repo metadata — repoRoutes returns { success, repo, files }
+        const repoRes  = await apiFetch(`${API_BASE}/repo/${repoId}`);
+        const repoData = await repoRes.json();
+        const repo = repoData.repo || repoData; // handle both shapes
+        currentRepoSlug = `${repo.owner || ''}/${repo.name || repo.owner || 'repo'}`.replace(/^\//, '');
+
+        // Show repo badge
+        document.getElementById('repo-badge').style.display = 'flex';
+        document.getElementById('repo-name-badge').textContent = currentRepoSlug;
+        if (repo.health_score != null) {
+            const hsBadge = document.getElementById('health-score-badge');
+            hsBadge.textContent = `Health: ${repo.health_score}/100`;
+            hsBadge.style.display = '';
         }
-    } catch (e) {
-        console.error('GitHub fetch error', e);
+
+        // 2. Fetch files from DB
+        const filesRes = await apiFetch(`${API_BASE}/repo/${repoId}/files`);
+        dbFiles        = await filesRes.json();
+
+        // 3. Fetch edges from DB
+        const edgesRes = await apiFetch(`${API_BASE}/repo/${repoId}/edges`);
+        dbEdges        = await edgesRes.json();
+
+        // 4. Build file tree from DB file paths (importance mapped to risk)
+        const fileTree = buildTreeFromDBFiles(dbFiles);
+        repoLoaded     = true;
+        renderFileTree(fileTree);
+
+        // 5. Render blast radius D3 graph
+        renderBlastGraph(dbFiles, dbEdges);
+
+        // 6. Load onboarding from DB (or generate if missing)
+        await loadOnboarding(repoId, currentRole, currentRepoSlug, fileTree);
+
+    } catch(e) {
+        console.error('DB load error', e);
+        document.getElementById('explorer-loading').style.display = 'none';
+        document.getElementById('explorer-empty').style.display   = 'flex';
+        document.getElementById('quest-loading').style.display    = 'none';
+        document.getElementById('quest-empty').style.display      = 'flex';
     }
-
-    repoLoaded = true;
-    renderFileTree(fileTree);
-
-    // 2. Generate onboarding quest via Anthropic API
-    await generateOnboardingQuest(currentRole, slug, fileTree);
 }
 
-// Convert flat GitHub tree paths into nested folder/file structure
-function buildTreeFromPaths(gitTree) {
+// Build nested folder/file tree from flat DB file rows
+function buildTreeFromDBFiles(files) {
     const root = [];
-    const map = {};
+    const map  = {};
 
-    // Only include blobs (files), skip overly deep paths, limit to 200 entries
-    const files = gitTree
-        .filter(n => n.type === 'blob')
-        .slice(0, 200);
+    // Map importance → risk label used by renderFileTree
+    const importanceToRisk = { high: 'high', medium: 'medium', low: 'low', critical: 'high' };
 
-    files.forEach(node => {
-        const parts = node.path.split('/');
+    files.forEach(file => {
+        const path  = file.path || '';
+        const parts = path.split('/');
         let current = root;
+
         parts.forEach((part, i) => {
-            const isFile = i === parts.length - 1;
-            const key = parts.slice(0, i + 1).join('/');
+            const isFile = (i === parts.length - 1);
+            const key    = parts.slice(0, i + 1).join('/');
+
             if (isFile) {
-                current.push({ name: part, path: node.path, risk: null });
+                current.push({
+                    name: part,
+                    path: path,
+                    risk: importanceToRisk[file.importance] || null,
+                    danger_score: file.danger_score,
+                    summary: file.summary
+                });
             } else {
                 if (!map[key]) {
                     const folder = { name: part, type: 'folder', children: [] };
-                    map[key] = folder;
+                    map[key]     = folder;
                     current.push(folder);
                 }
                 current = map[key].children;
             }
         });
     });
-
     return root;
 }
 
-// Flatten tree to get a simple list of file paths for the AI prompt
+// Flatten tree to get list of file paths (used for onboarding prompt)
 function flattenTree(nodes, result = []) {
     nodes.forEach(n => {
         if (n.type === 'folder') flattenTree(n.children, result);
@@ -485,23 +622,23 @@ function flattenTree(nodes, result = []) {
     return result;
 }
 
-// ─── File Tree ───────────────────────────────────────────────────────────────
+// ─── File Tree Rendering ─────────────────────────────────────────────────────
 const riskColor = { high: 'bg-danger', medium: 'bg-warning', low: 'bg-success' };
 
 function renderFileTree(nodes, parentEl, depth) {
-    depth = depth || 0;
+    depth   = depth || 0;
     const root = parentEl || document.getElementById('file-tree-content');
     if (!parentEl) {
-        root.innerHTML = '';
-        allFileNodes = [];
-        lastFileTree = nodes;
+        root.innerHTML  = '';
+        allFileNodes    = [];
+        lastFileTree    = nodes;
         document.getElementById('explorer-loading').style.display = 'none';
         document.getElementById('file-search-wrap').style.display = 'block';
         root.style.display = 'block';
     }
     nodes.forEach(node => {
         if (node.type === 'folder') {
-            const wrap = document.createElement('div');
+            const wrap   = document.createElement('div');
             wrap.className = depth > 0 ? 'ml-lg border-l border-border/50 pl-xs flex flex-col gap-0.5 mt-1' : '';
             const header = document.createElement('div');
             header.className = 'flex items-center gap-xs py-1 px-xs hover:bg-surface-container-high rounded cursor-pointer group file-item';
@@ -512,7 +649,7 @@ function renderFileTree(nodes, parentEl, depth) {
             const children = document.createElement('div');
             children.className = 'ml-lg border-l border-border/50 pl-xs flex flex-col gap-0.5';
             header.onclick = () => {
-                const arrow = header.querySelector('.folder-arrow');
+                const arrow       = header.querySelector('.folder-arrow');
                 const isCollapsed = children.style.display === 'none';
                 children.style.display = isCollapsed ? 'flex' : 'none';
                 children.style.flexDirection = 'column';
@@ -526,7 +663,9 @@ function renderFileTree(nodes, parentEl, depth) {
             const item = document.createElement('div');
             item.className = 'flex items-center justify-between py-1 px-xs hover:bg-surface-container-high rounded cursor-pointer file-item';
             item.dataset.filename = node.name.toLowerCase();
-            const dot = node.risk ? `<span class="w-2 h-2 rounded-full ${riskColor[node.risk]} ${node.risk==='high'?'animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]':''}"></span>` : '';
+            const dot = node.risk
+                ? `<span class="w-2 h-2 rounded-full ${riskColor[node.risk]} ${node.risk==='high'?'animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]':''}"></span>`
+                : '';
             item.innerHTML = `
                 <div class="flex items-center gap-xs">
                     <span class="material-symbols-outlined text-[16px] text-text-secondary">description</span>
@@ -545,25 +684,318 @@ function filterFiles(query) {
     });
 }
 
-// ─── Onboarding Quest (AI-powered) ───────────────────────────────────────────
+// ─── Blast Radius D3 Graph ───────────────────────────────────────────────────
+let blastSim = null;
+
+function renderBlastGraph(files, edges) {
+    const svgEl = document.getElementById('blast-svg');
+    svgEl.style.display = 'block';
+
+    const container = document.getElementById('graph-canvas');
+    const W = container?.clientWidth  || 700;
+    const H = container?.clientHeight || 500;
+
+    const svg = d3.select('#blast-svg');
+    svg.selectAll('*').remove();
+    svg.attr('viewBox', `0 0 ${W} ${H}`);
+
+    // ── Color map: red=high, yellow=medium, green=low/safe, blue=entry ──
+    const colorMap = {
+        high:  '#ef4444',   // red
+        med:   '#f59e0b',   // yellow
+        low:   '#10b981',   // green
+        entry: '#60a5fa'    // blue
+    };
+
+    // Arrow markers — one per color so links match node colors
+    const defs = svg.append('defs');
+    Object.entries(colorMap).forEach(([key, color]) => {
+        defs.append('marker')
+            .attr('id', `arrow-${key}`)
+            .attr('viewBox','0 -4 8 8')
+            .attr('refX', 16).attr('refY', 0)
+            .attr('markerWidth', 6).attr('markerHeight', 6)
+            .attr('orient','auto')
+            .append('path')
+                .attr('d','M0,-4L8,0L0,4')
+                .attr('fill', color)
+                .attr('opacity', 0.7);
+    });
+    // Default arrow for dimmed links
+    defs.append('marker')
+        .attr('id','arrow-dim')
+        .attr('viewBox','0 -4 8 8')
+        .attr('refX', 16).attr('refY', 0)
+        .attr('markerWidth', 6).attr('markerHeight', 6)
+        .attr('orient','auto')
+        .append('path')
+            .attr('d','M0,-4L8,0L0,4')
+            .attr('fill','rgba(74,96,128,0.4)');
+
+    // ── Build nodes from files ──
+    // Normalise path: strip leading slash for consistent matching
+    const norm = p => (p || '').replace(/^\//, '');
+
+    const hasIncoming = new Set(edges.map(e => norm(e.to_file)));
+
+    const nodes = files.map(f => {
+        const p       = norm(f.path);
+        const base    = p.split('/').pop();
+        // Use importance from DB first, fall back to danger_score
+        const imp     = (f.importance || '').toLowerCase();
+        let risk;
+        if (imp === 'high' || imp === 'critical')  risk = 'high';
+        else if (imp === 'medium')                  risk = 'med';
+        else if (imp === 'low')                     risk = 'low';
+        else {
+            const score = f.danger_score || 0;
+            risk = score >= 8 ? 'high' : score >= 5 ? 'med' : 'low';
+        }
+        const isEntry = !hasIncoming.has(p) && (f.danger_score || 0) > 0;
+        return {
+            id:    p,
+            label: base.length > 12 ? base.slice(0, 11) + '…' : base,
+            risk:  isEntry ? 'entry' : risk,
+            size:  12 + Math.min((f.danger_score || 3) * 1.1, 12),
+            desc:  typeof f.summary === 'string' ? f.summary : '',
+            danger_score: f.danger_score || 0
+        };
+    });
+
+    const nodeIds = new Set(nodes.map(n => n.id));
+
+    // ── Build links — normalise paths for matching ──
+    const links = edges
+        .map(e => ({ source: norm(e.from_file), target: norm(e.to_file) }))
+        .filter(e => nodeIds.has(e.source) && nodeIds.has(e.target) && e.source !== e.target);
+
+    // ── Force simulation ──
+    if (blastSim) blastSim.stop();
+    blastSim = d3.forceSimulation(nodes)
+        .force('link',      d3.forceLink(links).id(d => d.id).distance(100).strength(0.5))
+        .force('charge',    d3.forceManyBody().strength(-320))
+        .force('center',    d3.forceCenter(W / 2, H / 2))
+        .force('collision', d3.forceCollide().radius(d => d.size + 14));
+
+    const g = svg.append('g');
+
+    // Zoom + pan
+    svg.call(d3.zoom().scaleExtent([0.25, 4]).on('zoom', e => g.attr('transform', e.transform)));
+
+    const blastGroup = g.append('g').attr('class','blast-rings');
+
+    // ── Links — colored by source node risk ──
+    const sourceRisk = {};
+    nodes.forEach(n => { sourceRisk[n.id] = n.risk; });
+
+    const linkEls = g.append('g').selectAll('line')
+        .data(links).join('line')
+        .attr('class','g-link')
+        .attr('stroke', d => colorMap[sourceRisk[d.source] || 'low'] || 'rgba(74,96,128,0.5)')
+        .attr('stroke-opacity', 0.5)
+        .attr('marker-end', d => `url(#arrow-${sourceRisk[d.source] || 'low'})`);
+
+    // ── Nodes ──
+    const nodeEls = g.append('g').selectAll('.g-node')
+        .data(nodes).join('g')
+        .attr('class','g-node')
+        .call(d3.drag()
+            .on('start', (e, d) => { if (!e.active) blastSim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+            .on('drag',  (e, d) => { d.fx = e.x; d.fy = e.y; })
+            .on('end',   (e, d) => { if (!e.active) blastSim.alphaTarget(0); d.fx = null; d.fy = null; })
+        );
+
+    nodeEls.append('circle')
+        .attr('r',      d => d.size)
+        .attr('fill',   d => colorMap[d.risk] + '28')
+        .attr('stroke', d => colorMap[d.risk])
+        .attr('stroke-width', 2)
+        .style('filter', d => `drop-shadow(0 0 6px ${colorMap[d.risk]}99)`);
+
+    nodeEls.append('text')
+        .attr('dy', '0.35em')
+        .attr('text-anchor','middle')
+        .attr('font-family','JetBrains Mono, monospace')
+        .attr('font-size', '9px')
+        .attr('fill', '#c8d8f0')
+        .attr('pointer-events','none')
+        .text(d => d.label);
+
+    // Click: blast
+    nodeEls.on('click', (e, d) => {
+        e.stopPropagation();
+        triggerBlast(d, nodes, links, nodeEls, linkEls, blastGroup);
+    });
+
+    // Click background: reset
+    svg.on('click', () => {
+        linkEls
+            .classed('bl-highlighted', false)
+            .classed('bl-dimmed', false)
+            .attr('stroke-opacity', 0.5);
+        blastGroup.selectAll('*').remove();
+        nodeEls.classed('impacted', false);
+        document.getElementById('blast-info').classList.remove('visible');
+    });
+
+    // Tick
+    blastSim.on('tick', () => {
+        linkEls
+            .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+        nodeEls.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+
+    // Fit to screen button
+    document.querySelector('[title="Fit to Screen"]')?.addEventListener('click', () => {
+        svg.transition().duration(500).call(
+            d3.zoom().transform, d3.zoomIdentity.translate(W * 0.1, H * 0.1).scale(0.85)
+        );
+    });
+}
+
+// BFS reverse traversal — find all files that depend on nodeId
+function getBlastImpacted(nodeId, links) {
+    const adj = {};
+    links.forEach(l => {
+        const sid = typeof l.source === 'object' ? l.source.id : l.source;
+        const tid = typeof l.target === 'object' ? l.target.id : l.target;
+        if (!adj[tid]) adj[tid] = [];
+        adj[tid].push(sid);
+    });
+    const visited = new Set();
+    const queue   = [nodeId];
+    while (queue.length) {
+        const cur = queue.shift();
+        if (visited.has(cur)) continue;
+        visited.add(cur);
+        (adj[cur] || []).forEach(n => { if (!visited.has(n)) queue.push(n); });
+    }
+    visited.delete(nodeId);
+    return visited;
+}
+
+function triggerBlast(d, nodes, links, nodeEls, linkEls, blastGroup) {
+    const impacted  = getBlastImpacted(d.id, links);
+    const colorMap  = { high:'#ef4444', med:'#f59e0b', low:'#10b981', entry:'#adc6ff' };
+
+    // Highlight links
+    linkEls.each(function(l) {
+        const sid = typeof l.source === 'object' ? l.source.id : l.source;
+        const tid = typeof l.target === 'object' ? l.target.id : l.target;
+        const hit = (sid === d.id && impacted.has(tid)) ||
+                    (tid === d.id && impacted.has(sid)) ||
+                    (impacted.has(sid) && impacted.has(tid));
+        d3.select(this).classed('bl-highlighted', hit).classed('bl-dimmed', !hit);
+    });
+
+    // Flash impacted nodes
+    nodeEls.each(function(n) {
+        if (impacted.has(n.id)) {
+            d3.select(this).classed('impacted', false);
+            setTimeout(() => d3.select(this).classed('impacted', true), 30);
+        }
+    });
+
+    // Blast rings
+    blastGroup.selectAll('*').remove();
+    for (let i = 0; i < 3; i++) {
+        blastGroup.append('circle')
+            .attr('class','blast-ring')
+            .attr('cx', d.x).attr('cy', d.y)
+            .attr('r', d.size)
+            .style('animation-delay', `${i * 0.18}s`);
+
+        blastGroup.append('circle')
+            .attr('fill','none')
+            .attr('stroke','#ef4444')
+            .attr('stroke-width', 2.5 - i * 0.5)
+            .attr('cx', d.x).attr('cy', d.y)
+            .attr('r', d.size)
+            .attr('opacity', 0.85)
+            .transition()
+            .delay(i * 180).duration(900).ease(d3.easeQuadOut)
+            .attr('r', 80 + i * 38)
+            .attr('opacity', 0)
+            .attr('stroke-width', 0.5);
+    }
+
+    // Propagation lines to impacted nodes
+    impacted.forEach(targetId => {
+        const tNode = nodes.find(n => n.id === targetId);
+        if (!tNode) return;
+        blastGroup.append('line')
+            .attr('x1', d.x).attr('y1', d.y)
+            .attr('x2', d.x).attr('y2', d.y)
+            .attr('stroke','#ef4444').attr('stroke-width',1.5)
+            .attr('stroke-dasharray','4,4').attr('opacity',0.65)
+            .transition().duration(480).delay(Math.random() * 200).ease(d3.easeQuadOut)
+            .attr('x2', tNode.x).attr('y2', tNode.y)
+            .transition().duration(500).attr('opacity', 0).remove();
+    });
+
+    // Blast info overlay
+    const info       = document.getElementById('blast-info');
+    const riskLabel  = d.risk === 'high' ? 'HIGH RISK' : d.risk === 'med' ? 'MED RISK' : d.risk === 'entry' ? 'ENTRY POINT' : 'LOW RISK';
+    const badgeCls   = d.risk === 'high' ? 'bi-high' : d.risk === 'med' ? 'bi-med' : 'bi-low';
+    document.getElementById('bi-name').textContent    = d.id;
+    document.getElementById('bi-count').textContent   = impacted.size;
+    const badge = document.getElementById('bi-badge');
+    badge.textContent = riskLabel;
+    badge.className   = `bi-badge ${badgeCls}`;
+    const summaryEl = document.getElementById('bi-summary');
+    summaryEl.textContent = d.desc ? d.desc.slice(0, 100) : '';
+    info.classList.add('visible');
+}
+
+// ─── Onboarding Quest ────────────────────────────────────────────────────────
 const roleLabels = {
-    backend: 'Backend Dev Path',
-    frontend: 'Frontend Dev Path',
-    devops: 'DevOps Path',
+    backend:   'Backend Dev Path',
+    frontend:  'Frontend Dev Path',
+    devops:    'DevOps Path',
     fullstack: 'Full-stack Path'
 };
 
-async function generateOnboardingQuest(role, repoSlug, fileTree) {
+async function loadOnboarding(repoId, role, repoSlug, fileTree) {
     document.getElementById('quest-role-title').textContent = roleLabels[role] || 'Onboarding Path';
-    document.getElementById('quest-subtitle').textContent = repoSlug;
-    document.getElementById('quest-empty').style.display = 'none';
+    document.getElementById('quest-subtitle').textContent   = repoSlug;
+    document.getElementById('quest-empty').style.display   = 'none';
     document.getElementById('quest-loading').style.display = 'flex';
     document.getElementById('quest-loading').style.flexDirection = 'column';
     document.getElementById('quest-steps-content').style.display = 'none';
-    document.getElementById('quest-progress-bar').style.display = 'none';
+    document.getElementById('quest-progress-bar').style.display  = 'none';
 
+    let steps = null;
+
+    // Try loading from DB first
+    try {
+        const res  = await apiFetch(`${API_BASE}/repo/${repoId}/onboarding?role=${role}`);
+        const data = await res.json();
+        if (data && data.roadmap_json) {
+            steps = JSON.parse(data.roadmap_json);
+        }
+    } catch(_) {}
+
+    // Fall back to generating via AI if not in DB
+    if (!steps || steps.length === 0) {
+        steps = await generateOnboardingAI(role, repoSlug, fileTree);
+        // Save back to DB
+        try {
+            await apiFetch(`${API_BASE}/repo/${repoId}/onboarding`, {
+                method: 'POST',
+                body: JSON.stringify({ role, roadmap_json: JSON.stringify(steps) })
+            });
+        } catch(_) {}
+    }
+
+    questSteps = steps.map((s, i) => ({ ...s, done: false, index: i }));
+    document.getElementById('quest-loading').style.display = 'none';
+    document.getElementById('quest-progress-bar').style.display = 'block';
+    renderQuestSteps();
+}
+
+async function generateOnboardingAI(role, repoSlug, fileTree) {
     const filePaths = flattenTree(fileTree).slice(0, 120).join('\n');
-
     const prompt = `You are a senior engineer onboarding a new ${role} developer to the GitHub repo: ${repoSlug}.
 
 Here are the files in this repo:
@@ -576,48 +1008,37 @@ For each step output JSON with these exact fields:
 - title: short label (2-4 words)
 - desc: one sentence explaining why this file matters for their role
 - time: estimated reading time like "5 min" or "10 min"
-- risk: one of "high", "medium", or "low" (how critical/risky is this file)
+- risk: one of "high", "medium", or "low"
 
-Respond ONLY with a JSON array. No markdown, no explanation, no backticks. Example:
-[{"file":"main.py","title":"Entry Point","desc":"App starts here.","time":"5 min","risk":"high"}]`;
+Respond ONLY with a JSON array. No markdown, no explanation, no backticks.`;
 
     try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
+        const res  = await apiFetch('/api/ai/chat', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 1000,
-                messages: [{ role: 'user', content: prompt }]
-            })
+            body: JSON.stringify({ prompt })
         });
-        const data = await res.json();
-        const text = data.content?.map(b => b.text || '').join('') || '[]';
+        const data  = await res.json();
+        const text  = data.text || '[]';
         const clean = text.replace(/```json|```/g, '').trim();
-        const steps = JSON.parse(clean);
-        questSteps = steps.map((s, i) => ({ ...s, done: false, index: i }));
-    } catch (e) {
+        return JSON.parse(clean);
+    } catch(e) {
         console.error('AI quest error', e);
-        questSteps = [];
+        return [];
     }
-
-    document.getElementById('quest-loading').style.display = 'none';
-    document.getElementById('quest-progress-bar').style.display = 'block';
-    renderQuestSteps();
 }
 
 function renderQuestSteps() {
     const container = document.getElementById('quest-steps-content');
     container.style.display = 'block';
-    container.innerHTML = '';
+    container.innerHTML     = '';
     const total = questSteps.length;
-    const done = questSteps.filter(s => s.done).length;
-    document.getElementById('quest-progress-text').textContent = `${done} of ${total}`;
-    document.getElementById('quest-progress-fill').style.width = `${(done / total) * 100}%`;
+    const done  = questSteps.filter(s => s.done).length;
+    document.getElementById('quest-progress-text').textContent    = `${done} of ${total}`;
+    document.getElementById('quest-progress-fill').style.width    = `${(done / total) * 100}%`;
 
     questSteps.forEach((step, i) => {
         const isNext = !step.done && (i === 0 || questSteps[i - 1].done);
-        const el = document.createElement('div');
+        const el     = document.createElement('div');
         if (step.done) {
             el.className = 'bg-surface-container-low border border-border rounded-lg p-sm flex items-start gap-md opacity-60';
             el.innerHTML = `
@@ -667,8 +1088,8 @@ function markDone(index) {
 
 function onRoleChange() {
     currentRole = document.getElementById('role-selector').value;
-    if (repoLoaded) {
-        generateOnboardingQuest(currentRole, document.getElementById('repo-name-badge').textContent, lastFileTree);
+    if (repoLoaded && currentRepoId) {
+        loadOnboarding(currentRepoId, currentRole, currentRepoSlug, lastFileTree);
     }
 }
 
