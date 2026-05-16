@@ -1,7 +1,4 @@
-// ── API BASE ──────────────────────────────────────────────
-const API_BASE = window.location.hostname === 'localhost'
-  ? 'http://localhost:5000/api'
-  : 'https://dev-lens-39k6.onrender.com/api';
+// ── API_BASE is defined in auth.js, used here ──────────────
 
 // ── ROLE SELECTION ────────────────────────────────────────
 let selectedRole = "fullstack";
