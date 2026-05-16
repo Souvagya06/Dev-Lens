@@ -218,13 +218,13 @@ function logout() {
   localStorage.removeItem("devlens_user");
   localStorage.removeItem("devlens_analysisId");
   localStorage.removeItem("devlens_repoName");
-  window.location.href = "/";
+  window.location.href = "/pages/login.html";
 }
 
 // ── PROTECT PAGE ──────────────────────────────────────────
 const token = localStorage.getItem("devlens_token");
 if (!token) {
-  window.location.href = "/";
+  window.location.href = "/pages/login.html";
 }
 
 // Always reset to main section visible on load (handles browser Back from dashboard)
