@@ -813,7 +813,7 @@ function renderBlastGraph(files, edges) {
             id:    p,
             label: base.length > 12 ? base.slice(0, 11) + '…' : base,
             risk:  isEntry ? 'entry' : (isIsolated && nodeClassification === 'orphan') ? 'orphan' : risk,
-            size:  12 + Math.min((f.danger_score || 3) * 1.1, 12),
+            size:  16 + Math.min((f.danger_score || 3) * 2, 20),
             desc:  typeof f.summary === 'string' ? f.summary : '',
             danger_score: f.danger_score || 0,
             isIsolated: isIsolated,
