@@ -1,3 +1,8 @@
+// ── API BASE ─────────────────────────────────────────────
+const API_BASE = window.location.hostname === 'localhost'
+  ? 'http://localhost:5000/api'
+  : 'https://dev-lens-39k6.onrender.com/api';
+
 // ── POPUP NOTIFICATION ───────────────────────────────────
 function showPopup(message, type = "error") {
   const existing = document.getElementById("devlens-popup");
@@ -46,7 +51,7 @@ async function handleSignup() {
   }
 
   try {
-    const res = await fetch("/api/auth/signup", {
+    const res = await fetch(`${API_BASE}/auth/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password }),
@@ -81,7 +86,7 @@ async function handleLogin() {
   }
 
   try {
-    const res = await fetch("/api/auth/login", {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
