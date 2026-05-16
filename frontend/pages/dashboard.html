@@ -89,6 +89,8 @@
     #blast-info .bi-low   { background:rgba(16,185,129,0.1);  color:#10b981; border:1px solid rgba(16,185,129,0.3); }
     #blast-info .bi-stat  { color:#8b93a1; }
     #blast-info .bi-stat span { color:#d2bbff; font-weight:700; }
+    #bi-affected-list::-webkit-scrollbar { width:3px; }
+    #bi-affected-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:3px; }
 
     /* Active nav link underline — matches landing page purple underline */
     .nav-active {
@@ -204,10 +206,14 @@
             <svg id="blast-svg" style="display:none; position:absolute; inset:0;"></svg>
             <!-- Blast info overlay -->
             <div id="blast-info">
-                <div class="bi-name" id="bi-name">—</div>
+                <div class="bi-name" id="bi-name">-</div>
                 <div id="bi-badge" class="bi-badge bi-low">LOW RISK</div>
                 <div class="bi-stat">Blast radius: <span id="bi-count">0</span> files affected</div>
                 <div class="bi-stat" id="bi-summary" style="max-width:280px;white-space:normal;margin-top:3px;line-height:1.5"></div>
+                <div id="bi-affected-wrap" style="display:none;margin-top:8px;border-top:1px solid rgba(255,255,255,0.08);padding-top:7px;">
+                    <div style="font-size:10px;font-weight:700;color:#8b93a1;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:5px;">If changed, affects:</div>
+                    <div id="bi-affected-list" style="display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;"></div>
+                </div>
             </div>
         </div>
 
@@ -932,6 +938,40 @@ function triggerBlast(d, nodes, links, nodeEls, linkEls, blastGroup) {
     badge.className   = `bi-badge ${badgeCls}`;
     const summaryEl = document.getElementById('bi-summary');
     summaryEl.textContent = d.desc ? d.desc.slice(0, 100) : '';
+
+    // Affected files list
+    const affectedWrap = document.getElementById('bi-affected-wrap');
+    const affectedList = document.getElementById('bi-affected-list');
+    affectedList.innerHTML = '';
+    if (impacted.size > 0) {
+        const riskIcon = { high: '🔴', med: '🟡', low: '🟢', entry: '🔵' };
+        impacted.forEach(targetId => {
+            const tNode = nodes.find(n => n.id === targetId);
+            if (!tNode) return;
+            // Determine how this node depends on the changed file
+            const isDirectDep = links.some(l => {
+                const sid = typeof l.source === 'object' ? l.source.id : l.source;
+                const tid = typeof l.target === 'object' ? l.target.id : l.target;
+                return (sid === d.id && tid === targetId) || (tid === d.id && sid === targetId);
+            });
+            const icon = riskIcon[tNode.risk] || '⚪';
+            const relation = isDirectDep ? 'directly imports this' : 'transitively depends on this';
+            const shortName = targetId.split('/').pop();
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;flex-direction:column;gap:1px;padding:4px 6px;background:rgba(255,255,255,0.04);border-radius:5px;border:1px solid rgba(255,255,255,0.07);';
+            row.innerHTML = `
+                <div style="display:flex;align-items:center;gap:5px;">
+                    <span style="font-size:10px;">${icon}</span>
+                    <span style="font-size:11px;font-weight:600;color:#d2bbff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;" title="${targetId}">${shortName}</span>
+                </div>
+                <div style="font-size:10px;color:#8b93a1;padding-left:15px;">${relation}${tNode.desc ? ' — ' + tNode.desc.slice(0, 60) : ''}</div>`;
+            affectedList.appendChild(row);
+        });
+        affectedWrap.style.display = 'block';
+    } else {
+        affectedWrap.style.display = 'none';
+    }
+
     info.classList.add('visible');
 }
 
