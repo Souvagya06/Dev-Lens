@@ -56,6 +56,8 @@
     #blast-svg { display:block; width:100%; height:100%; }
     .g-node circle { stroke-width:2; cursor:pointer; transition:filter 0.2s; }
     .g-node circle:hover { filter:brightness(1.4); }
+    .g-node.orphan circle { stroke-dasharray: 5,5; stroke-width: 2.5; opacity:0.7; }
+    .g-node.orphan circle:hover { opacity:1; }
     .g-node text { font-family:'JetBrains Mono',monospace; font-size:9px; fill:#c8d8f0; pointer-events:none; user-select:none; }
     .g-link { stroke:rgba(74,96,128,0.45); stroke-width:1.5; fill:none; marker-end:url(#bl-arrow); }
     .g-link.bl-highlighted { stroke:#ef4444; stroke-width:2.5; opacity:1 !important; }
@@ -230,6 +232,10 @@
             <div class="flex items-center gap-xs ml-auto">
                 <span class="w-2.5 h-2.5 rounded-full bg-secondary shadow-[0_0_5px_rgba(173,198,255,0.5)]"></span>
                 <span class="text-text-secondary">Entry Point</span>
+            </div>
+            <div class="flex items-center gap-xs" title="Unused or orphan node - no incoming/outgoing dependencies">
+                <span class="w-2.5 h-2.5 rounded-full bg-gray-500 shadow-[0_0_5px_rgba(107,114,128,0.5)]"></span>
+                <span class="text-text-secondary">Orphan</span>
             </div>
         </div>
     </section>
@@ -691,12 +697,13 @@ function renderBlastGraph(files, edges) {
     svg.selectAll('*').remove();
     svg.attr('viewBox', `0 0 ${W} ${H}`);
 
-    // ── Color map: red=high, yellow=medium, green=low/safe, blue=entry ──
+    // ── Color map: red=high, yellow=medium, green=low/safe, blue=entry, gray=orphan ──
     const colorMap = {
         high:  '#ef4444',   // red
         med:   '#f59e0b',   // yellow
         low:   '#10b981',   // green
-        entry: '#60a5fa'    // blue
+        entry: '#60a5fa',   // blue
+        orphan: '#6b7280'   // gray (for orphan/isolated nodes)
     };
 
     // Arrow markers — one per color so links match node colors
@@ -729,6 +736,7 @@ function renderBlastGraph(files, edges) {
     const norm = p => (p || '').replace(/^\//, '');
 
     const hasIncoming = new Set(edges.map(e => norm(e.to_file)));
+    const hasOutgoing = new Set(edges.map(e => norm(e.from_file)));
 
     const nodes = files.map(f => {
         const p       = norm(f.path);
@@ -743,14 +751,76 @@ function renderBlastGraph(files, edges) {
             const score = f.danger_score || 0;
             risk = score >= 8 ? 'high' : score >= 5 ? 'med' : 'low';
         }
-        const isEntry = !hasIncoming.has(p) && (f.danger_score || 0) > 0;
+        
+        // Check if this node is isolated (no incoming AND no outgoing connections)
+        const isIsolated = !hasIncoming.has(p) && !hasOutgoing.has(p);
+        
+        // Mark as entry point only if it has NO incoming but HAS outgoing connections
+        // and it's not a configuration file or similar
+        const isEntry = !hasIncoming.has(p) && hasOutgoing.has(p) && (f.danger_score || 0) > 0;
+        
+        // Classify orphan status
+        let nodeClassification = 'standard'; // default
+        let isolationReason = null;
+        
+        if (isIsolated) {
+            // Check for common patterns that might indicate hidden dependencies
+            const filename = base.toLowerCase();
+            const filepath = p.toLowerCase();
+            
+            // Configuration files, types, constants - may be imported dynamically
+            if (filename.includes('config') || filename.includes('constant') || 
+                filename.includes('type') || filename.includes('interface') ||
+                filename.includes('.d.ts') || filename.endsWith('.config.js') ||
+                filepath.includes('types/') || filepath.includes('config/') ||
+                filepath.includes('constants/')) {
+                nodeClassification = 'config';
+                isolationReason = 'Configuration or type definitions - may be imported via dynamic paths or environment';
+            }
+            // Test/spec files
+            else if (filename.includes('test') || filename.includes('spec') || 
+                     filename.endsWith('.test.js') || filename.endsWith('.spec.js')) {
+                nodeClassification = 'test';
+                isolationReason = 'Test file - likely unused in production but important for coverage';
+            }
+            // Entry points / main files
+            else if (filename === 'index.js' || filename === 'main.js' || 
+                     filename === 'app.js' || filename === 'server.js' ||
+                     filename === 'index.ts' || filename === 'main.ts') {
+                nodeClassification = 'entry';
+                isolationReason = 'Potential entry point - check if it\'s referenced in package.json or imports elsewhere';
+            }
+            // API routes
+            else if (filepath.includes('route') || filepath.includes('api/') || 
+                     filepath.includes('handler') || filepath.includes('endpoint')) {
+                nodeClassification = 'route';
+                isolationReason = 'API route or handler - may be registered dynamically via routing framework';
+            }
+            // Utilities/helpers
+            else if (filepath.includes('util') || filepath.includes('helper') || 
+                     filepath.includes('lib/')) {
+                nodeClassification = 'utility';
+                isolationReason = 'Utility or helper module - may be used indirectly or via dynamic imports';
+            }
+            else {
+                // Truly orphaned
+                nodeClassification = 'orphan';
+                isolationReason = 'Unused/orphan node - no incoming or outgoing dependencies detected. May be dead code, work-in-progress, or dynamically loaded.';
+            }
+        }
+        
         return {
             id:    p,
             label: base.length > 12 ? base.slice(0, 11) + '…' : base,
-            risk:  isEntry ? 'entry' : risk,
+            risk:  isEntry ? 'entry' : (isIsolated && nodeClassification === 'orphan') ? 'orphan' : risk,
             size:  12 + Math.min((f.danger_score || 3) * 1.1, 12),
             desc:  typeof f.summary === 'string' ? f.summary : '',
-            danger_score: f.danger_score || 0
+            danger_score: f.danger_score || 0,
+            isIsolated: isIsolated,
+            classification: nodeClassification,
+            isolationReason: isolationReason,
+            incomingCount: Array.from(edges).filter(e => norm(e.to_file) === p).length,
+            outgoingCount: Array.from(edges).filter(e => norm(e.from_file) === p).length
         };
     });
 
@@ -790,7 +860,7 @@ function renderBlastGraph(files, edges) {
     // ── Nodes ──
     const nodeEls = g.append('g').selectAll('.g-node')
         .data(nodes).join('g')
-        .attr('class','g-node')
+        .attr('class', d => `g-node ${d.isIsolated && d.classification === 'orphan' ? 'orphan' : ''}`)
         .call(d3.drag()
             .on('start', (e, d) => { if (!e.active) blastSim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
             .on('drag',  (e, d) => { d.fx = e.x; d.fy = e.y; })
@@ -811,7 +881,21 @@ function renderBlastGraph(files, edges) {
         .attr('font-size', '9px')
         .attr('fill', '#c8d8f0')
         .attr('pointer-events','none')
-        .text(d => d.label);
+        .text(d => d.label)
+        .append('title')
+        .text(d => {
+            let title = `${d.id}\n`;
+            if (d.isIsolated && d.classification === 'orphan') {
+                title += '[ORPHAN NODE] ';
+            } else if (d.isIsolated) {
+                title += `[${d.classification.toUpperCase()}] `;
+            }
+            title += `Incoming: ${d.incomingCount}, Outgoing: ${d.outgoingCount}`;
+            if (d.isolationReason) {
+                title += `\n\n${d.isolationReason}`;
+            }
+            return title;
+        });
 
     // Click: blast
     nodeEls.on('click', (e, d) => {
@@ -928,20 +1012,52 @@ function triggerBlast(d, nodes, links, nodeEls, linkEls, blastGroup) {
 
     // Blast info overlay
     const info       = document.getElementById('blast-info');
-    const riskLabel  = d.risk === 'high' ? 'HIGH RISK' : d.risk === 'med' ? 'MED RISK' : d.risk === 'entry' ? 'ENTRY POINT' : 'LOW RISK';
-    const badgeCls   = d.risk === 'high' ? 'bi-high' : d.risk === 'med' ? 'bi-med' : 'bi-low';
-    document.getElementById('bi-name').textContent    = d.id;
-    document.getElementById('bi-count').textContent   = impacted.size;
+    
+    // Determine risk label and badge class based on node state and classification
+    let riskLabel = '';
+    let badgeCls  = '';
+    let statusMessage = '';
+    
+    if (d.isIsolated && d.classification === 'orphan') {
+        // Truly orphaned node
+        riskLabel = '⚠️ ORPHAN NODE';
+        badgeCls = 'bi-high'; // Use red to highlight warning
+        statusMessage = d.isolationReason || 'This file appears to be unused and may be dead code.';
+    } else if (d.isIsolated) {
+        // Configuration, test, utility, or other isolated node
+        riskLabel = 'ℹ️ ISOLATED';
+        badgeCls = 'bi-med'; // Use yellow for informational
+        statusMessage = d.isolationReason || 'This file is isolated but may have hidden dependencies.';
+    } else {
+        // Normal node - use outgoing count to determine risk
+        const radius = d.outgoingCount || 0;
+        if (radius >= 10) { riskLabel = 'CRITICAL'; badgeCls = 'bi-high'; }
+        else if (radius >= 5) { riskLabel = 'HIGH RISK'; badgeCls = 'bi-high'; }
+        else if (radius >= 2) { riskLabel = 'MED RISK'; badgeCls = 'bi-med'; }
+        else { riskLabel = 'LOW RISK'; badgeCls = 'bi-low'; }
+    }
+    
+    document.getElementById('bi-name').textContent = d.id;
+    document.getElementById('bi-count').textContent = impacted.size;
     const badge = document.getElementById('bi-badge');
     badge.textContent = riskLabel;
     badge.className   = `bi-badge ${badgeCls}`;
+    
+    // Update summary with status message or description
     const summaryEl = document.getElementById('bi-summary');
-    summaryEl.textContent = d.desc ? d.desc.slice(0, 100) : '';
+    if (statusMessage) {
+        summaryEl.textContent = statusMessage;
+        summaryEl.style.color = d.classification === 'orphan' ? '#ef4444' : '#f59e0b';
+    } else {
+        summaryEl.textContent = d.desc ? d.desc.slice(0, 100) : '';
+        summaryEl.style.color = '#8b93a1';
+    }
 
     // Affected files list
     const affectedWrap = document.getElementById('bi-affected-wrap');
     const affectedList = document.getElementById('bi-affected-list');
     affectedList.innerHTML = '';
+    
     if (impacted.size > 0) {
         const riskIcon = { high: '🔴', med: '🟡', low: '🟢', entry: '🔵' };
         impacted.forEach(targetId => {
@@ -968,6 +1084,7 @@ function triggerBlast(d, nodes, links, nodeEls, linkEls, blastGroup) {
         });
         affectedWrap.style.display = 'block';
     } else {
+        // No dependents - don't show affected list
         affectedWrap.style.display = 'none';
     }
 
