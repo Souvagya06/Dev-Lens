@@ -64,7 +64,7 @@ async function handleSignup() {
       localStorage.setItem("devlens_user", JSON.stringify(data.user));
       showPopup("New user created", "success");
       setTimeout(() => {
-        window.location.href = "/home.html";
+        window.location.href = "/pages/home.html";
       }, 1000);
     } else if (data.message === "Email already registered") {
       showPopup("Email already registered");
@@ -99,7 +99,7 @@ async function handleLogin() {
       localStorage.setItem("devlens_user", JSON.stringify(data.user));
       showPopup("Login successful", "success");
       setTimeout(() => {
-        window.location.href = "/home.html";
+        window.location.href = "/pages/home.html";
       }, 1000);
     } else if (res.status === 401) {
       showPopup("User doesn't exist");
@@ -115,14 +115,14 @@ async function handleLogin() {
 function logout() {
   localStorage.removeItem("devlens_token");
   localStorage.removeItem("devlens_user");
-  window.location.href = "/login.html";
+  window.location.href = "/pages/login.html";
 }
 
 // ── PROTECT PAGES ───────────────────────────────────────
 function requireAuth() {
   const token = localStorage.getItem("devlens_token");
   if (!token) {
-    window.location.href = "/login.html";
+    window.location.href = "/pages/login.html";
   }
 }
 
@@ -130,7 +130,7 @@ function requireAuth() {
 function redirectIfLoggedIn() {
   const token = localStorage.getItem("devlens_token");
   if (token) {
-    window.location.href = "/home.html";
+    window.location.href = "/pages/home.html";
   }
 }
 

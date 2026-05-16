@@ -61,7 +61,7 @@ async function analyzeRepo() {
       document.getElementById("loading-section").classList.add("hidden");
       history.replaceState(null, "", window.location.href);
       setTimeout(() => {
-        window.location.href = `/dashboard.html?repo_id=${data.analysisId}`;
+        window.location.href = `/pages/dashboard.html?repo_id=${data.analysisId}`;
       }, 1000);
     } else if (data.message === "Invalid token" || data.message === "Unauthorized") {
       logout();
@@ -169,7 +169,7 @@ async function loadPastAnalyses() {
 }
 
 function openAnalysis(id, repo) {
-  window.location.href = `/dashboard.html?repo_id=${id}`;
+  window.location.href = `/pages/dashboard.html?repo_id=${id}`;
 }
 
 function getHealthColor(score) {
