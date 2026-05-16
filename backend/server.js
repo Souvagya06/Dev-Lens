@@ -18,7 +18,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors');
 app.use(cors({
-  origin: ['https://your-vercel-app.vercel.app', 'http://localhost:5000']
+  origin: ['https://dev-lens-topaz.vercel.app', 'http://localhost:5000']
 }));
 // ✅ MIDDLEWARE FIRST — before everything
 app.use(express.json());
