@@ -347,7 +347,9 @@ class="bg-surface-container-highest border border-border text-text-secondary fon
 <script>
 // ─── Config ──────────────────────────────────────────────────────────────────
 // Change this to your backend base URL (Express / FastAPI / etc.)
-const API_BASE = 'https://dev-lens-39k6.onrender.com/api';
+const API_BASE = window.location.hostname === 'localhost'
+  ? 'http://localhost:5000/api'
+  : 'https://dev-lens-39k6.onrender.com/api';
 
 // ─── State ───────────────────────────────────────────────────────────────────
 let chatOpen     = false;

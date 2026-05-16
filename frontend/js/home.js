@@ -1,3 +1,8 @@
+// ── API BASE ──────────────────────────────────────────────
+const API_BASE = window.location.hostname === 'localhost'
+  ? 'http://localhost:5000/api'
+  : 'https://dev-lens-39k6.onrender.com/api';
+
 // ── ROLE SELECTION ────────────────────────────────────────
 let selectedRole = "fullstack";
 
@@ -35,7 +40,7 @@ async function analyzeRepo() {
   try {
     const token = localStorage.getItem("devlens_token");
 
-    const response = await fetch("/api/repo/analyze", {
+    const response = await fetch(`${API_BASE}/repo/analyze`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -117,7 +122,7 @@ function startAgentLogs() {
 async function loadPastAnalyses() {
   try {
     const token = localStorage.getItem("devlens_token");
-    const res = await fetch("/api/repo/history", {
+    const res = await fetch(`${API_BASE}/repo/history`, {
       headers: { "Authorization": `Bearer ${token}` }
     });
     const data = await res.json();
