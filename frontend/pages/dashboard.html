@@ -482,7 +482,7 @@ Question: ${userMsg}
 Answer in 2-4 sentences. Name specific files. No markdown, plain text only.`;
 
     try {
-        const res  = await apiFetch('/api/ai/chat', {
+        const res  = await apiFetch(`${API_BASE}/ai/chat`, {
             method: 'POST',
             body: JSON.stringify({ prompt })
         });
@@ -1039,7 +1039,7 @@ For each step output JSON with these exact fields:
 Respond ONLY with a JSON array. No markdown, no explanation, no backticks.`;
 
     try {
-        const res  = await apiFetch('/api/ai/chat', {
+        const res  = await apiFetch(`${API_BASE}/ai/chat`, {
             method: 'POST',
             body: JSON.stringify({ prompt })
         });
@@ -1122,7 +1122,7 @@ function onRoleChange() {
 function handleLogout() {
     localStorage.removeItem('devlens_token');
     sessionStorage.clear();
-    window.location.href = '/';
+    window.location.href = '/pages/login.html';
 }
 </script>
 </body></html>
