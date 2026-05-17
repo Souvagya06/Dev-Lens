@@ -242,10 +242,39 @@ function buildDependencyGraph(repoPath) {
     blastRadius.set(link.target, count + 1);
   }
 
-  // Create nodes with blast radius
+  // Build adjacency maps for incoming/outgoing connections
+  const incomingMap = new Map();
+  const outgoingMap = new Map();
+  
+  for (const file of relativeFiles) {
+    incomingMap.set(file, []);
+    outgoingMap.set(file, []);
+  }
+  
+  for (const link of links) {
+    outgoingMap.get(link.source).push(link.target);
+    incomingMap.get(link.target).push(link.source);
+  }
+
+  // Detect orphan nodes and classify them
+  const isOrphanNode = new Map();
+  
+  for (const file of relativeFiles) {
+    const hasIncoming = incomingMap.get(file).length > 0;
+    const hasOutgoing = outgoingMap.get(file).length > 0;
+    
+    // A node is potentially orphan if it has NO connections at all
+    isOrphanNode.set(file, !hasIncoming && !hasOutgoing);
+  }
+
+  // Create nodes with enhanced metadata
   const nodes = relativeFiles.map((id) => ({
     id,
-    blastRadius: blastRadius.get(id) || 0
+    blastRadius: blastRadius.get(id) || 0,
+    incomingCount: incomingMap.get(id).length,
+    outgoingCount: outgoingMap.get(id).length,
+    isIsolated: isOrphanNode.get(id),
+    isolationReason: null // Will be set by AI analysis
   }));
 
   return { nodes, links };
