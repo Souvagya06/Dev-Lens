@@ -139,7 +139,7 @@
 <main class="flex-1 flex mt-[60px] h-[calc(100vh-60px)] overflow-hidden">
 
     <!-- Left Panel: Explorer -->
-    <aside class="w-1/5 min-w-[240px] bg-surface border-r border-border flex flex-col">
+    <aside class="w-1/5 min-w-[240px] bg-surface border-r border-border flex flex-col min-h-0 h-full">
         <div class="p-md border-b border-border flex items-center justify-between">
             <h2 class="font-label-md text-label-md font-bold text-text-primary uppercase tracking-wider">Explorer</h2>
             <button class="text-text-secondary hover:text-primary transition-colors">
@@ -159,7 +159,7 @@
                 <input id="file-search" class="w-full bg-transparent border-none text-text-primary font-label-sm text-label-sm py-1.5 pl-xl pr-sm focus:ring-0 placeholder:text-text-secondary" placeholder="Search files..." type="text" oninput="filterFiles(this.value)"/>
             </div>
         </div>
-        <div class="flex-1 overflow-y-auto p-sm font-label-sm text-label-sm no-scrollbar" id="file-tree">
+        <div class="relative flex min-h-0 w-full flex-1 flex-col overflow-y-auto overflow-x-auto p-sm font-label-sm text-label-sm" id="file-tree" style="scrollbar-width:thin;scrollbar-color:#3b3b4f transparent;">
             <!-- Empty state -->
             <div id="explorer-empty" class="flex flex-col items-center justify-center h-full gap-md text-center px-md py-xl">
                 <span class="material-symbols-outlined text-[40px] text-text-secondary/30">folder_open</span>

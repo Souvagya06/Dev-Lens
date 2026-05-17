@@ -85,14 +85,27 @@ router.post("/analyze", authMiddleware, async (req, res) => {
       f.replace(repoPath, "").replace(/\\/g, "/")
     );
 
-    // Analyze first 15 files
-    const filesToAnalyze = allFiles.slice(0, 15);
+    // Group files by top-level folder and pick proportionally
+    const filesByFolder = {};
+    for (const f of allFiles) {
+      const rel = f.replace(repoPath, "").replace(/\\/g, "/").replace(/^\//, "");
+      const topFolder = rel.includes("/") ? rel.split("/")[0] : "__root__";
+      if (!filesByFolder[topFolder]) filesByFolder[topFolder] = [];
+      filesByFolder[topFolder].push(f);
+    }
+
+    const MAX_FILES = 30;
+    const folders = Object.keys(filesByFolder);
+    const perFolder = Math.max(1, Math.floor(MAX_FILES / folders.length));
+    const filesToAnalyze = folders.flatMap(folder =>
+      filesByFolder[folder].slice(0, perFolder)
+    ).slice(0, MAX_FILES);
     const results = [];
 
     for (const filePath of filesToAnalyze) {
       const code = fs.readFileSync(filePath, "utf-8");
 
-      if (code.length > 5000) {
+      if (code.length > 15000) {
         console.log(`⏭️ Skipping large file: ${path.basename(filePath)}`);
         continue;
       }
